@@ -17,6 +17,7 @@ button {
 <script>
 var html = document.querySelector('html');
 var button = document.querySelector('button');
+var failed = false;
 var interval;
 
 // Returns a random integer between min and max
@@ -26,6 +27,7 @@ function getRandomInt(min, max) {
 }
 
 function win() {
+  if (failed) return;
   window.parent.postMessage({type: "end", score: 1.0}, "*");
   button.textContent = 'HOORAY';
   clearInterval(interval);
@@ -45,6 +47,7 @@ onresize = function() {
 
 onmessage = function(e) {
   if (e.data.type == "outoftime") {
+    failed = true;
     button.textContent = 'U SUK';
     clearInterval(interval);
     html.style.backgroundColor = "crimson";

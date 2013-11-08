@@ -3,9 +3,14 @@
 <title>Game 1</title>
 <style>
 html { background-color: lightgray; }
+h1 {
+  margin-top: -50px;
+  transition: margin-top 3s;
+}
 </style>
 <h1></h1>
 <script>
+var failed = false;
 var html = document.querySelector('html');
 var h1 = document.querySelector('h1');
 var character = String.fromCharCode(getRandomInt(65, 90));
@@ -20,16 +25,21 @@ function getRandomInt(min, max) {
 
 onmessage = function(e) {
   if (e.data.type == "outoftime") {
+    failed = true;
     h1.textContent = "alas";
     html.style.backgroundColor = "red";
   }
 };
 
 onkeydown = function(e) {
-  if (e.keyCode == character.charCodeAt(0)) {
+  if (e.keyCode == character.charCodeAt(0) && !failed) {
     html.style.backgroundColor = "lightgreen";
     h1.textContent = "yay";
     window.parent.postMessage({type: "end", score: 1.0}, "*");
   }
 };
+
+onresize = function() {
+  h1.style.marginTop = "0";
+}
 </script>
