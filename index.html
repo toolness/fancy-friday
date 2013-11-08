@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Fancy Friday!</title>
+<style>
+.minigame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.minigame.loading {
+  display: none;
+}
+
+.minigame .time-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  z-index: 1;
+  transition: opacity 1s;
+}
+
+.minigame .time-bar .time {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: black;
+}
+
+.minigame .time-bar.won {
+  opacity: 0;
+}
+
+.minigame > iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: black;
+  color: white;
+  z-index: 1;
+}
+</style>
+<footer>
+  Score: <span id="score">0</span>
+</footer>
+<script>
+var ARBITRARY_DELAY = 100;
+var SECONDS_PER_PLAY = 5;
+var SECONDS_PER_ENDING = 2;
+var SANDBOX_PERMISSIONS = [
+  'allow-same-origin',
+  'allow-scripts',
+  'allow-pointer-lock',
+];
+
+function createMinigame(url) {
+  var minigame = document.createElement('div');
+  var timeBar = document.createElement('div');
+  var time = document.createElement('div');
+  var iframe = document.createElement('iframe');
+  var outOfTimeTimeout;
+
+  iframe.sandbox = SANDBOX_PERMISSIONS.join(' ');
+  iframe.src = url;
+  minigame.classList.add('minigame');
+  minigame.classList.add('loading');
+  timeBar.classList.add('time-bar');
+  timeBar.appendChild(time);
+  time.classList.add('time');
+  minigame.appendChild(timeBar);
+  minigame.appendChild(iframe);
+
+  minigame.MINIGAME_LOADING = 0;
+  minigame.MINIGAME_READY = 1;
+  minigame.MINIGAME_PLAYING = 2;
+  minigame.MINIGAME_ENDING = 3;
+  minigame.MINIGAME_ENDED = 4;
+
+  minigame.minigameState = minigame.MINIGAME_LOADING;
+  minigame.score = 0;
+
+  minigame.handleMessage = function(data) {
+    data = typeof(data) == 'string' ? {type: data} : data;
+
+    if (!data) return;
+    if (data.score >= 0 && data.score <= 1) minigame.score = data.score;
+
+    if (data.type == "end")
+      minigame.dispatchEvent(new CustomEvent("minigameending"));
+  };
+
+  minigame.send = function(message) {
+    if (typeof(message) == "string") message = {type: message};
+    iframe.contentWindow.postMessage(message, "*");
+  };
+
+  minigame.play = function() {
+    if (minigame.minigameState != minigame.MINIGAME_READY) return;
+
+    minigame.minigameState = minigame.MINIGAME_PLAYING;
+    minigame.classList.remove("loading");
+    setTimeout(function() {
+      time.style.transition = "width " + SECONDS_PER_PLAY + "s";
+      time.style.width = "0%";
+      outOfTimeTimeout = setTimeout(function() {
+        minigame.dispatchEvent(new CustomEvent("minigameending"));
+        minigame.send("outoftime");
+      }, SECONDS_PER_PLAY * 1000);
+      iframe.contentWindow.focus();
+      minigame.send({
+        type: "play",
+        playTime: SECONDS_PER_PLAY,
+        endingTime: SECONDS_PER_ENDING
+      });
+    }, ARBITRARY_DELAY);
+  };
+
+  iframe.addEventListener("load", function() {
+    if (minigame.minigameState != minigame.MINIGAME_LOADING) return;
+
+    minigame.minigameState = minigame.MINIGAME_READY;
+    minigame.dispatchEvent(new CustomEvent("minigameready"));
+  });
+
+  minigame.addEventListener("minigameending", function(e) {
+    if (minigame.minigameState != minigame.MINIGAME_PLAYING) return;
+
+    minigame.minigameState = minigame.MINIGAME_ENDING;
+    clearTimeout(outOfTimeTimeout);
+    timeBar.parentNode.removeChild(timeBar);
+    setTimeout(function() {
+      minigame.minigameState = minigame.MINIGAME_ENDED;
+      minigame.dispatchEvent(new CustomEvent("minigameended"));
+    }, SECONDS_PER_ENDING * 1000);
+  });
+
+  return minigame;
+}
+
+window.addEventListener("message", function(e) {
+  var minigames = document.querySelectorAll(".minigame > iframe");
+
+  for (var i = 0; i < minigames.length; i++)
+    if (e.source === minigames[i].contentWindow)
+      minigames[i].parentNode.handleMessage(e.data);
+}, false);
+
+(function playMinigamesForever() {
+  var MINIGAME_URLS = [
+    "game-01.html",
+    "game-02.html"
+  ];
+  var scoreEl = document.getElementById('score');
+  var currentMinigame = null;
+
+  // Returns a random integer between min and max
+  // Using Math.round() will give you a non-uniform distribution!
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  function playAnotherMinigame() {
+    var randomIndex = getRandomInt(0, MINIGAME_URLS.length - 1);
+    var minigame = createMinigame(MINIGAME_URLS[randomIndex]);
+
+    minigame.addEventListener("minigameready", function() {
+      if (currentMinigame)
+        currentMinigame.parentNode.removeChild(currentMinigame);
+      currentMinigame = minigame;
+      minigame.play();
+    });
+    minigame.addEventListener("minigameended", function() {
+      scoreEl.textContent = parseFloat(scoreEl.textContent) + minigame.score;
+      playAnotherMinigame();
+    });
+    document.body.appendChild(minigame);
+  };
+
+  window.addEventListener("load", playAnotherMinigame, false);
+})();
+</script>

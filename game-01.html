@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Game 1</title>
+<style>
+html { background-color: lightgray; }
+</style>
+<h1></h1>
+<script>
+var html = document.querySelector('html');
+var h1 = document.querySelector('h1');
+var character = String.fromCharCode(getRandomInt(65, 90));
+
+h1.textContent = "press " + character.toLowerCase() + ".";
+
+// Returns a random integer between min and max
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+onmessage = function(e) {
+  if (e.data.type == "outoftime") {
+    h1.textContent = "alas";
+    html.style.backgroundColor = "red";
+  }
+};
+
+onkeydown = function(e) {
+  if (e.keyCode == character.charCodeAt(0)) {
+    html.style.backgroundColor = "lightgreen";
+    h1.textContent = "yay";
+    window.parent.postMessage({type: "end", score: 1.0}, "*");
+  }
+};
+</script>

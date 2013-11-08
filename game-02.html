@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+html {
+  height: 100%;
+}
+
+button {
+  font-size: 24px;
+  position: absolute;
+  transition: top 1s, left 1s;
+}
+</style>
+<title>Game 2</title>
+<br>
+<button autocomplete="off" onmousedown="win()">tap me</button>
+<script>
+var html = document.querySelector('html');
+var button = document.querySelector('button');
+var interval;
+
+// Returns a random integer between min and max
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function win() {
+  window.parent.postMessage({type: "end", score: 1.0}, "*");
+  button.textContent = 'HOORAY';
+  clearInterval(interval);
+}
+
+function moveButton() {
+  button.style.top = getRandomInt(0, html.offsetHeight -
+                                     button.offsetHeight) + "px";
+  button.style.left = getRandomInt(0, html.offsetWidth - 
+                                      button.offsetWidth) + "px";
+}
+
+onresize = function() {
+  interval = setInterval(moveButton, 1500);
+  moveButton();
+};
+
+onmessage = function(e) {
+  if (e.data.type == "outoftime") {
+    button.textContent = 'U SUK';
+    clearInterval(interval);
+    html.style.backgroundColor = "crimson";
+  }
+};
+</script>
