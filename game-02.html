@@ -40,7 +40,7 @@ function moveButton() {
                                       button.offsetWidth) + "px";
 }
 
-onresize = function() {
+onload = function() {
   interval = setInterval(moveButton, 1500);
   moveButton();
 };
