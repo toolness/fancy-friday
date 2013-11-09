@@ -108,6 +108,9 @@ var FancyFriday = (function() {
       if (minigame.minigameState != minigame.MINIGAME_PLAYING) return;
 
       minigame.minigameState = minigame.MINIGAME_ENDING;
+      var curtain = document.createElement('div');
+      curtain.classList.add('invisible-curtain');
+      minigame.appendChild(curtain);
       clearTimeout(outOfTimeTimeout);
       timeBar.parentNode.removeChild(timeBar);
       setTimeout(function() {
