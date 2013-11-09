@@ -34,7 +34,7 @@ var FancyFriday = (function() {
     if (Array.isArray(options.sandbox))
       options.sandbox = options.sandbox.join(' ');
 
-    if (options.sandbox)
+    if (typeof(options.sandbox) == 'string')
       iframe.sandbox = options.sandbox;
 
     iframe.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
