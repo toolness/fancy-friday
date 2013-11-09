@@ -37,7 +37,10 @@ var FancyFriday = (function() {
     if (options.sandbox)
       iframe.sandbox = options.sandbox;
 
-    iframe.src = url;
+    iframe.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
+                 'playTime=' + secondsPerPlay +
+                 '&endingTime=' + secondsPerEnding +
+                 '&cacheBust=' + Date.now();
     minigame.classList.add('minigame');
     minigame.classList.add('loading');
     timeBar.classList.add('time-bar');
@@ -77,7 +80,6 @@ var FancyFriday = (function() {
       minigame.classList.remove("loading");
 
       var focusCheckInterval = setInterval(function() {
-        console.log("FOCUS CHECK");
         iframe.contentWindow.focus();
         if (document.activeElement !== iframe) return;
         clearInterval(focusCheckInterval);
