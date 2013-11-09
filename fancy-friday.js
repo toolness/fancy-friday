@@ -112,7 +112,7 @@ var FancyFriday = (function() {
       curtain.classList.add('invisible-curtain');
       minigame.appendChild(curtain);
       clearTimeout(outOfTimeTimeout);
-      timeBar.parentNode.removeChild(timeBar);
+      timeBar.classList.add('ending');
       setTimeout(function() {
         minigame.minigameState = minigame.MINIGAME_ENDED;
         minigame.dispatchEvent(new CustomEvent("minigameended"));
