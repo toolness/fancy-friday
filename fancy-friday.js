@@ -1,5 +1,5 @@
 var FancyFriday = (function() {
-  var ARBITRARY_DELAY = 100;
+  var FOCUS_CHECK_INTERVAL = 10;
   var SECONDS_PER_PLAY = 5;
   var SECONDS_PER_ENDING = 2;
   var SANDBOX_PERMISSIONS = [
@@ -75,20 +75,24 @@ var FancyFriday = (function() {
 
       minigame.minigameState = minigame.MINIGAME_PLAYING;
       minigame.classList.remove("loading");
-      setTimeout(function() {
+
+      var focusCheckInterval = setInterval(function() {
+        console.log("FOCUS CHECK");
+        iframe.contentWindow.focus();
+        if (document.activeElement !== iframe) return;
+        clearInterval(focusCheckInterval);
         time.style.transition = "width " + secondsPerPlay + "s";
         time.style.width = "0%";
         outOfTimeTimeout = setTimeout(function() {
           minigame.dispatchEvent(new CustomEvent("minigameending"));
           minigame.send("outoftime");
         }, secondsPerPlay * 1000);
-        iframe.contentWindow.focus();
         minigame.send({
           type: "play",
           playTime: secondsPerPlay,
           endingTime: secondsPerEnding
         });
-      }, ARBITRARY_DELAY);
+      }, FOCUS_CHECK_INTERVAL);
     };
 
     iframe.addEventListener("load", function() {
