@@ -73,6 +73,13 @@ function createMinigame(url) {
   var timeBar = document.createElement('div');
   var time = document.createElement('div');
   var iframe = document.createElement('iframe');
+  var CustomEvent = function CustomEvent(type, params) {
+    params = params || {bubbles: false, cancelable: false};
+    var event = document.createEvent('CustomEvent');
+    event.initCustomEvent(type, params.bubbles, params.cancelable,
+                          params.detail);
+    return event;
+  };
   var outOfTimeTimeout;
 
   iframe.sandbox = SANDBOX_PERMISSIONS.join(' ');
