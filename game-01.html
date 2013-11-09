@@ -13,7 +13,7 @@ button {
 </style>
 <title>Game 2</title>
 <br>
-<button autocomplete="off" onmousedown="win()">tap me</button>
+<button autocomplete="off">tap me</button>
 <script>
 var html = document.querySelector('html');
 var button = document.querySelector('button');
@@ -39,6 +39,8 @@ function moveButton() {
   button.style.left = getRandomInt(0, html.offsetWidth - 
                                       button.offsetWidth) + "px";
 }
+
+button.ontouchstart = button.onmousedown = win;
 
 onload = function() {
   interval = setInterval(moveButton, 1500);
