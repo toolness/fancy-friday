@@ -35,7 +35,7 @@ function getRandomInt(min, max) {
 }
 
 function win() {
-  window.parent.postMessage({type: "end", score: 1.0}, "*");
+  parent.postMessage('win', "*");
   button.textContent = 'HOORAY';
   clearInterval(interval);
 }
