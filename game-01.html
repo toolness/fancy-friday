@@ -37,6 +37,7 @@ function getRandomInt(min, max) {
 function win() {
   parent.postMessage('win', "*");
   button.textContent = 'HOORAY';
+  html.style.backgroundColor = "lightgreen";
   clearInterval(interval);
 }
 
@@ -57,8 +58,8 @@ onload = function() {
 onmessage = function(e) {
   if (e.data.type == "outoftime") {
     button.textContent = 'U SUK';
-    clearInterval(interval);
     html.style.backgroundColor = "crimson";
+    clearInterval(interval);
   }
 };
 </script>
