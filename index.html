@@ -18,11 +18,11 @@ footer {
 </footer>
 <script src="fancy-friday.js"></script>
 <script>
-var MINIGAME_URLS = [
+var MICROGAME_URLS = [
   "game-01.html"
 ];
 var scoreEl = document.getElementById('score');
-var currentMinigame = null;
+var currentMicrogame = null;
 
 // Returns a random integer between min and max
 // Using Math.round() will give you a non-uniform distribution!
@@ -30,22 +30,22 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function playAnotherMinigame() {
-  var randomIndex = getRandomInt(0, MINIGAME_URLS.length - 1);
-  var minigame = FancyFriday.Minigame(MINIGAME_URLS[randomIndex]);
+function playAnotherMicrogame() {
+  var randomIndex = getRandomInt(0, MICROGAME_URLS.length - 1);
+  var microgame = FancyFriday.Microgame(MICROGAME_URLS[randomIndex]);
 
-  minigame.addEventListener("minigameready", function() {
-    if (currentMinigame)
-      currentMinigame.parentNode.removeChild(currentMinigame);
-    currentMinigame = minigame;
-    minigame.play();
+  microgame.addEventListener("microgameready", function() {
+    if (currentMicrogame)
+      currentMicrogame.parentNode.removeChild(currentMicrogame);
+    currentMicrogame = microgame;
+    microgame.play();
   });
-  minigame.addEventListener("minigameended", function() {
-    scoreEl.textContent = parseFloat(scoreEl.textContent) + minigame.score;
-    playAnotherMinigame();
+  microgame.addEventListener("microgameended", function() {
+    scoreEl.textContent = parseFloat(scoreEl.textContent) + microgame.score;
+    playAnotherMicrogame();
   });
-  document.body.appendChild(minigame);
+  document.body.appendChild(microgame);
 };
 
-window.addEventListener("load", playAnotherMinigame, false);
+window.addEventListener("load", playAnotherMicrogame, false);
 </script>

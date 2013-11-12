@@ -17,10 +17,10 @@ var FancyFriday = (function() {
     return event;
   };
 
-  FancyFriday.Minigame = function Minigame(url, options) {
+  FancyFriday.Microgame = function Microgame(url, options) {
     options = options || {};
 
-    var minigame = document.createElement('div');
+    var microgame = document.createElement('div');
     var timeBar = document.createElement('div');
     var time = document.createElement('div');
     var iframe = document.createElement('iframe');
@@ -41,44 +41,44 @@ var FancyFriday = (function() {
                  'playTime=' + secondsPerPlay +
                  '&endingTime=' + secondsPerEnding +
                  '&cacheBust=' + Date.now();
-    minigame.classList.add('minigame');
-    minigame.classList.add('loading');
+    microgame.classList.add('microgame');
+    microgame.classList.add('loading');
     timeBar.classList.add('time-bar');
     timeBar.appendChild(time);
     time.classList.add('time');
-    minigame.appendChild(timeBar);
-    minigame.appendChild(iframe);
+    microgame.appendChild(timeBar);
+    microgame.appendChild(iframe);
 
-    minigame.MINIGAME_LOADING = 0;
-    minigame.MINIGAME_READY = 1;
-    minigame.MINIGAME_PLAYING = 2;
-    minigame.MINIGAME_ENDING = 3;
-    minigame.MINIGAME_ENDED = 4;
+    microgame.MICROGAME_LOADING = 0;
+    microgame.MICROGAME_READY = 1;
+    microgame.MICROGAME_PLAYING = 2;
+    microgame.MICROGAME_ENDING = 3;
+    microgame.MICROGAME_ENDED = 4;
 
-    minigame.minigameState = minigame.MINIGAME_LOADING;
-    minigame.score = 0;
+    microgame.microgameState = microgame.MICROGAME_LOADING;
+    microgame.score = 0;
 
-    minigame.handleMessage = function(data) {
+    microgame.handleMessage = function(data) {
       if (data == 'win') data = {type: 'end', score: 1};
       data = typeof(data) == 'string' ? {type: data} : data;
 
       if (!data) return;
-      if (data.score >= 0 && data.score <= 1) minigame.score = data.score;
+      if (data.score >= 0 && data.score <= 1) microgame.score = data.score;
 
       if (data.type == "end")
-        minigame.dispatchEvent(new CustomEvent("minigameending"));
+        microgame.dispatchEvent(new CustomEvent("microgameending"));
     };
 
-    minigame.send = function(message) {
+    microgame.send = function(message) {
       if (typeof(message) == "string") message = {type: message};
       iframe.contentWindow.postMessage(message, "*");
     };
 
-    minigame.play = function() {
-      if (minigame.minigameState != minigame.MINIGAME_READY) return;
+    microgame.play = function() {
+      if (microgame.microgameState != microgame.MICROGAME_READY) return;
 
-      minigame.minigameState = minigame.MINIGAME_PLAYING;
-      minigame.classList.remove("loading");
+      microgame.microgameState = microgame.MICROGAME_PLAYING;
+      microgame.classList.remove("loading");
 
       var focusCheckInterval = setInterval(function() {
         iframe.contentWindow.focus();
@@ -87,10 +87,10 @@ var FancyFriday = (function() {
         time.style.transition = "width " + secondsPerPlay + "s";
         time.style.width = "0%";
         outOfTimeTimeout = setTimeout(function() {
-          minigame.dispatchEvent(new CustomEvent("minigameending"));
-          minigame.send("outoftime");
+          microgame.dispatchEvent(new CustomEvent("microgameending"));
+          microgame.send("outoftime");
         }, secondsPerPlay * 1000);
-        minigame.send({
+        microgame.send({
           type: "play",
           playTime: secondsPerPlay,
           endingTime: secondsPerEnding
@@ -99,36 +99,36 @@ var FancyFriday = (function() {
     };
 
     iframe.addEventListener("load", function() {
-      if (minigame.minigameState != minigame.MINIGAME_LOADING) return;
+      if (microgame.microgameState != microgame.MICROGAME_LOADING) return;
 
-      minigame.minigameState = minigame.MINIGAME_READY;
-      minigame.dispatchEvent(new CustomEvent("minigameready"));
+      microgame.microgameState = microgame.MICROGAME_READY;
+      microgame.dispatchEvent(new CustomEvent("microgameready"));
     });
 
-    minigame.addEventListener("minigameending", function(e) {
-      if (minigame.minigameState != minigame.MINIGAME_PLAYING) return;
+    microgame.addEventListener("microgameending", function(e) {
+      if (microgame.microgameState != microgame.MICROGAME_PLAYING) return;
 
-      minigame.minigameState = minigame.MINIGAME_ENDING;
+      microgame.microgameState = microgame.MICROGAME_ENDING;
       var curtain = document.createElement('div');
       curtain.classList.add('invisible-curtain');
-      minigame.appendChild(curtain);
+      microgame.appendChild(curtain);
       clearTimeout(outOfTimeTimeout);
       timeBar.classList.add('ending');
       setTimeout(function() {
-        minigame.minigameState = minigame.MINIGAME_ENDED;
-        minigame.dispatchEvent(new CustomEvent("minigameended"));
+        microgame.microgameState = microgame.MICROGAME_ENDED;
+        microgame.dispatchEvent(new CustomEvent("microgameended"));
       }, secondsPerEnding * 1000);
     });
 
-    return minigame;
+    return microgame;
   }
 
   window.addEventListener("message", function(e) {
-    var minigames = document.querySelectorAll(".minigame > iframe");
+    var microgames = document.querySelectorAll(".microgame > iframe");
 
-    for (var i = 0; i < minigames.length; i++)
-      if (e.source === minigames[i].contentWindow)
-        minigames[i].parentNode.handleMessage(e.data);
+    for (var i = 0; i < microgames.length; i++)
+      if (e.source === microgames[i].contentWindow)
+        microgames[i].parentNode.handleMessage(e.data);
   }, false);
 
   return FancyFriday;

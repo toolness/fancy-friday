@@ -1,4 +1,4 @@
-.minigame {
+.microgame {
   position: absolute;
   top: 0;
   left: 0;
@@ -6,7 +6,7 @@
   height: 100%;
 }
 
-.minigame .invisible-curtain {
+.microgame .invisible-curtain {
   position: absolute;
   top: 0;
   left: 0;
@@ -15,11 +15,11 @@
   z-index: 2;
 }
 
-.minigame.loading {
+.microgame.loading {
   visibility: hidden;
 }
 
-.minigame .time-bar {
+.microgame .time-bar {
   position: absolute;
   top: 0;
   left: 0;
@@ -29,11 +29,11 @@
   transition: opacity 0.25s;
 }
 
-.minigame .time-bar.ending {
+.microgame .time-bar.ending {
   opacity: 0;
 }
 
-.minigame .time-bar .time {
+.microgame .time-bar .time {
   position: absolute;
   top: 0;
   left: 0;
@@ -42,11 +42,11 @@
   background: black;
 }
 
-.minigame .time-bar.won {
+.microgame .time-bar.won {
   opacity: 0;
 }
 
-.minigame > iframe {
+.microgame > iframe {
   position: absolute;
   top: 0;
   left: 0;
