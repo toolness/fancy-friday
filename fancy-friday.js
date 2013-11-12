@@ -22,7 +22,7 @@ var FancyFriday = (function() {
 
     var microgame = document.createElement('div');
     var timeBar = document.createElement('div');
-    var time = document.createElement('div');
+    var timeRemaining = document.createElement('div');
     var iframe = document.createElement('iframe');
     var secondsPerPlay = options.secondsPerPlay || SECONDS_PER_PLAY;
     var secondsPerEnding = options.secondsPerEnding || SECONDS_PER_ENDING;
@@ -44,8 +44,8 @@ var FancyFriday = (function() {
     microgame.classList.add('ff-microgame');
     microgame.classList.add('ff-loading');
     timeBar.classList.add('ff-time-bar');
-    timeBar.appendChild(time);
-    time.classList.add('ff-time');
+    timeBar.appendChild(timeRemaining);
+    timeRemaining.classList.add('ff-time-remaining');
     microgame.appendChild(timeBar);
     microgame.appendChild(iframe);
 
@@ -84,8 +84,8 @@ var FancyFriday = (function() {
         iframe.contentWindow.focus();
         if (document.activeElement !== iframe) return;
         clearInterval(focusCheckInterval);
-        time.style.transition = "width " + secondsPerPlay + "s";
-        time.style.width = "0%";
+        timeRemaining.style.transition = "width " + secondsPerPlay + "s";
+        timeRemaining.style.width = "0%";
         outOfTimeTimeout = setTimeout(function() {
           microgame.dispatchEvent(new CustomEvent("microgameending"));
           microgame.send("outoftime");

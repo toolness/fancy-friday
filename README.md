@@ -94,6 +94,15 @@ the microgame's play phase is over.
 This event is emitted when `microgameState` reaches `MICROGAME_ENDED` and
 the microgame's ending sequence is over.
 
+### Microgame Styling
+
+`ff-time-bar` is the class given to the entire time bar. Changing its
+background will give a different style to the unfilled area of the time
+bar. Its height can also be changed.
+
+`ff-time-remaining` is the class given to the filled area of the time
+bar. Its background can be changed.
+
 ## Embedded Microgame API
 
 Embedded microgames communicate with their parent metagame entirely through
@@ -138,6 +147,13 @@ If the message is an object containing a `type` property with the value
 
 The microgame can also simply send the text message `win`, which is
 shorthand for `{type: 'end', score: 1}`.
+
+### Styling
+
+While there are no hard styling requirements for an embedded microgame, the
+top few pixels of its content will be obscured by the time bar that
+the metagame overlays atop it. The default height of this time bar is
+8 pixels.
 
   [WarioWare]: http://en.wikipedia.org/wiki/Wario_%28franchise%29#WarioWare_series
   [sandbox]: http://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/
