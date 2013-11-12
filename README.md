@@ -5,6 +5,10 @@ of games.
 Each micrograme is contained in an `<iframe>` element which can communicate
 with the parent game via a simple `postMessage`-based API.
 
+Only recent versions of modern browsers are currently supported; the
+library is currently being tested on Firefox 25, Chrome 30,
+Safari 6 (Desktop and iOS), Internet Explorer 10, and Opera 17.
+
 ## Metagame API
 
 The metagame should include the `fancy-friday.css` stylesheet and the
