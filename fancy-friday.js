@@ -41,11 +41,11 @@ var FancyFriday = (function() {
                  'playTime=' + secondsPerPlay +
                  '&endingTime=' + secondsPerEnding +
                  '&cacheBust=' + Date.now();
-    microgame.classList.add('microgame');
-    microgame.classList.add('loading');
-    timeBar.classList.add('time-bar');
+    microgame.classList.add('ff-microgame');
+    microgame.classList.add('ff-loading');
+    timeBar.classList.add('ff-time-bar');
     timeBar.appendChild(time);
-    time.classList.add('time');
+    time.classList.add('ff-time');
     microgame.appendChild(timeBar);
     microgame.appendChild(iframe);
 
@@ -78,7 +78,7 @@ var FancyFriday = (function() {
       if (microgame.microgameState != microgame.MICROGAME_READY) return;
 
       microgame.microgameState = microgame.MICROGAME_PLAYING;
-      microgame.classList.remove("loading");
+      microgame.classList.remove("ff-loading");
 
       var focusCheckInterval = setInterval(function() {
         iframe.contentWindow.focus();
@@ -110,10 +110,10 @@ var FancyFriday = (function() {
 
       microgame.microgameState = microgame.MICROGAME_ENDING;
       var curtain = document.createElement('div');
-      curtain.classList.add('invisible-curtain');
+      curtain.classList.add('ff-invisible-curtain');
       microgame.appendChild(curtain);
       clearTimeout(outOfTimeTimeout);
-      timeBar.classList.add('ending');
+      timeBar.classList.add('ff-ending');
       setTimeout(function() {
         microgame.microgameState = microgame.MICROGAME_ENDED;
         microgame.dispatchEvent(new CustomEvent("microgameended"));
@@ -124,7 +124,7 @@ var FancyFriday = (function() {
   }
 
   window.addEventListener("message", function(e) {
-    var microgames = document.querySelectorAll(".microgame > iframe");
+    var microgames = document.querySelectorAll(".ff-microgame > iframe");
 
     for (var i = 0; i < microgames.length; i++)
       if (e.source === microgames[i].contentWindow)

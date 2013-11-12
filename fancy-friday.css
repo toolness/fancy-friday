@@ -1,4 +1,4 @@
-.microgame {
+.ff-microgame {
   position: absolute;
   top: 0;
   left: 0;
@@ -6,7 +6,7 @@
   height: 100%;
 }
 
-.microgame .invisible-curtain {
+.ff-invisible-curtain {
   position: absolute;
   top: 0;
   left: 0;
@@ -15,11 +15,11 @@
   z-index: 2;
 }
 
-.microgame.loading {
+.ff-microgame.ff-loading {
   visibility: hidden;
 }
 
-.microgame .time-bar {
+.ff-time-bar {
   position: absolute;
   top: 0;
   left: 0;
@@ -29,11 +29,11 @@
   transition: opacity 0.25s;
 }
 
-.microgame .time-bar.ending {
+.ff-time-bar.ff-ending {
   opacity: 0;
 }
 
-.microgame .time-bar .time {
+.ff-time-bar .ff-time {
   position: absolute;
   top: 0;
   left: 0;
@@ -42,11 +42,7 @@
   background: black;
 }
 
-.microgame .time-bar.won {
-  opacity: 0;
-}
-
-.microgame > iframe {
+.ff-microgame > iframe {
   position: absolute;
   top: 0;
   left: 0;
