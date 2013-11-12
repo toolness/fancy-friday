@@ -2,14 +2,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, user-scalable=no">
 <link rel="stylesheet" href="fancy-friday.css">
+<link rel="stylesheet" href="example/c64-pixelized.css">
 <title>Fancy Friday!</title>
 <style>
 footer {
+  font-family: 'Commodore 64 Pixelized';
+  font-size: 24px;
   position: absolute;
   bottom: 0;
   right: 0;
   background: black;
   color: white;
+  padding: 2px;
   z-index: 1;
 }
 </style>
@@ -20,7 +24,7 @@ footer {
 <script src="fancy-friday.js"></script>
 <script>
 var MICROGAME_URLS = [
-  "game-01.html"
+  "example/game-01.html"
 ];
 var scoreEl = document.getElementById('score');
 var currentMicrogame = null;

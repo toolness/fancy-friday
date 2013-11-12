@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link rel="stylesheet" href="c64-pixelized.css">
 <style>
 html {
   height: 100%;
@@ -12,7 +13,9 @@ button:hover {
 }
 
 button {
-  border: 1px solid black;
+  font-family: 'Commodore 64 Pixelized', monospace;
+  font-weight: normal;
+  border: 2px solid black;
   padding: 4px;
   background: white;
   font-size: 24px;
@@ -37,7 +40,7 @@ function getRandomInt(min, max) {
 function win() {
   parent.postMessage('win', "*");
   button.textContent = 'HOORAY';
-  html.style.backgroundColor = "lightgreen";
+  html.style.backgroundColor = "#00ff00";
   clearInterval(interval);
 }
 
@@ -58,7 +61,7 @@ onload = function() {
 onmessage = function(e) {
   if (e.data.type == "outoftime") {
     button.textContent = 'U SUK';
-    html.style.backgroundColor = "crimson";
+    html.style.backgroundColor = "#ff0000";
     clearInterval(interval);
   }
 };
