@@ -27,10 +27,10 @@ keys:
   it also prevents plug-ins from being used; set this option to `null`
   to disable sandboxing entirely.
 
-* `secondsPerPlay` - The amount of time, in seconds, the player has to
+* `playTime` - The amount of time, in seconds, the player has to
   complete the microgame. Defaults to 5.
 
-* `secondsPerEnding` - The amount of time, in seconds, the microgame has
+* `endingTime` - The amount of time, in seconds, the microgame has
   to show an ending sequence. Defaults to 2.
 
 This constructor returns a microgame instance, which is really just the

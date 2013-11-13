@@ -1,7 +1,7 @@
 var FancyFriday = (function() {
   var FOCUS_CHECK_INTERVAL = 10;
-  var SECONDS_PER_PLAY = 5;
-  var SECONDS_PER_ENDING = 2;
+  var DEFAULT_PLAY_TIME = 5;
+  var DEFAULT_ENDING_TIME = 2;
   var SANDBOX_PERMISSIONS = [
     'allow-same-origin',
     'allow-scripts',
@@ -24,8 +24,8 @@ var FancyFriday = (function() {
     var timeBar = document.createElement('div');
     var timeRemaining = document.createElement('div');
     var iframe = document.createElement('iframe');
-    var secondsPerPlay = options.secondsPerPlay || SECONDS_PER_PLAY;
-    var secondsPerEnding = options.secondsPerEnding || SECONDS_PER_ENDING;
+    var playTime = options.playTime || DEFAULT_PLAY_TIME;
+    var endingTime = options.endingTime || DEFAULT_ENDING_TIME;
     var outOfTimeTimeout;
 
     if (typeof(options.sandbox) == 'undefined')
@@ -38,8 +38,8 @@ var FancyFriday = (function() {
       iframe.sandbox = options.sandbox;
 
     iframe.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
-                 'playTime=' + secondsPerPlay +
-                 '&endingTime=' + secondsPerEnding +
+                 'playTime=' + playTime +
+                 '&endingTime=' + endingTime +
                  '&cacheBust=' + Date.now();
     microgame.classList.add('ff-microgame');
     microgame.classList.add('ff-loading');
@@ -84,16 +84,16 @@ var FancyFriday = (function() {
         iframe.contentWindow.focus();
         if (document.activeElement !== iframe) return;
         clearInterval(focusCheckInterval);
-        timeRemaining.style.transition = "width " + secondsPerPlay + "s";
+        timeRemaining.style.transition = "width " + playTime + "s";
         timeRemaining.style.width = "0%";
         outOfTimeTimeout = setTimeout(function() {
           microgame.dispatchEvent(new CustomEvent("microgameending"));
           microgame.send("outoftime");
-        }, secondsPerPlay * 1000);
+        }, playTime * 1000);
         microgame.send({
           type: "play",
-          playTime: secondsPerPlay,
-          endingTime: secondsPerEnding
+          playTime: playTime,
+          endingTime: endingTime
         });
       }, FOCUS_CHECK_INTERVAL);
     };
@@ -117,7 +117,7 @@ var FancyFriday = (function() {
       setTimeout(function() {
         microgame.microgameState = microgame.MICROGAME_ENDED;
         microgame.dispatchEvent(new CustomEvent("microgameended"));
-      }, secondsPerEnding * 1000);
+      }, endingTime * 1000);
     });
 
     return microgame;
