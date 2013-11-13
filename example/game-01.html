@@ -26,6 +26,7 @@ button {
 <title>Game 1</title>
 <br>
 <button autocomplete="off">tap me</button>
+<script src="../contrib/tinygame.js"></script>
 <script>
 var html = document.querySelector('html');
 var button = document.querySelector('button');
@@ -38,7 +39,7 @@ function getRandomInt(min, max) {
 }
 
 function win() {
-  parent.postMessage('win', "*");
+  Tinygame.win();
   button.textContent = 'HOORAY';
   html.style.backgroundColor = "#00ff00";
   clearInterval(interval);
@@ -52,17 +53,16 @@ function moveButton() {
 }
 
 button.ontouchstart = button.onmousedown = win;
+onload = moveButton;
 
-onload = function() {
+Tinygame.onplay = function() {
   interval = setInterval(moveButton, 1500);
   moveButton();
 };
 
-onmessage = function(e) {
-  if (e.data.type == "outoftime") {
-    button.textContent = 'U SUK';
-    html.style.backgroundColor = "#ff0000";
-    clearInterval(interval);
-  }
+Tinygame.onoutoftime = function() {
+  button.textContent = 'U SUK';
+  html.style.backgroundColor = "#ff0000";
+  clearInterval(interval);
 };
 </script>
