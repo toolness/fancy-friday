@@ -73,7 +73,9 @@ var Tinygame = (function() {
   Tinygame.playTime = getTimeArg('playTime');
   Tinygame.endingTime = getTimeArg('endingTime');
   Tinygame.end = function(score) {
-    metagame.postMessage({type: 'end', score: score}, "*");
+    var data = {type: 'end'};
+    if (typeof(score) == 'number') data.score = score;
+    metagame.postMessage(data, "*");
   };
   Tinygame.win = Tinygame.end.bind(Tinygame, 1.0);
   Tinygame.lose = Tinygame.end.bind(Tinygame, 0);

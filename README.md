@@ -111,7 +111,8 @@ bar. Its background can be changed.
 
 Embedded microgames communicate with their parent metagame entirely through
 DOM primitives; there is no hard requirement for client-side stylesheets or
-JS, though such assets can certainly be created for convenience purposes.
+JS, though such assets can certainly be created for convenience purposes (see
+the Tinygame API below for an example of this).
 
 The parent metagame is accessible via [window.parent][].
 
@@ -155,6 +156,51 @@ While there are no hard styling requirements for an embedded microgame, the
 top few pixels of its content will be obscured by the time bar that
 the metagame overlays atop it. The default height of this time bar is
 8 pixels.
+
+## Tinygame API
+
+`contrib/tinygame.js` is a standalone library with no dependencies that
+wraps the Embedded Microgame API in an easy-to-use interface, while
+providing some development affordances that make it easier to develop
+microgames.
+
+If the page using `tinygame.js` either doesn't set a `playTime` querystring
+argument or has the `dev` querystring argument set to `1`, then Tinygame
+enables development mode, which displays a time bar at the top of the
+page and simulates the major events that are sent to microgames by
+a metagame. This allows microgames to be developed without a parent
+metagame.
+
+### Tinygame.playTime
+
+The number of seconds the player has to play the microgame. Read-only.
+
+### Tinygame.endingTime
+
+The number of seconds the microgame has to show an ending sequence.
+Read-only.
+
+### Tinygame.onplay
+
+Assign a function to this property, and it will be called when the player
+has started playing the microgame.
+
+### Tinygame.onoutoftime
+
+Assign a function to this property, and it will be called when the player
+runs out of time.
+
+### Tinygame.end([score])
+
+This will end the microgame, optionally setting the player's score.
+
+### Tinygame.win()
+
+Shorthand for `Tinygame.end(1)`.
+
+### Tinygame.lose()
+
+Shorthand for `Tinygame.end(0)`.
 
   [WarioWare]: http://en.wikipedia.org/wiki/Wario_%28franchise%29#WarioWare_series
   [sandbox]: http://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/
