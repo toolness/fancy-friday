@@ -171,34 +171,38 @@ page and simulates the major events that are sent to microgames by
 a metagame. This allows microgames to be developed without a parent
 metagame.
 
-### Tinygame.playTime
+### Tinygame properties
+
+#### Tinygame.playTime
 
 The number of seconds the player has to play the microgame. Read-only.
 
-### Tinygame.endingTime
+#### Tinygame.endingTime
 
 The number of seconds the microgame has to show an ending sequence.
 Read-only.
 
-### Tinygame.onplay
+#### Tinygame.onplay
 
 Assign a function to this property, and it will be called when the player
 has started playing the microgame.
 
-### Tinygame.onoutoftime
+#### Tinygame.onoutoftime
 
 Assign a function to this property, and it will be called when the player
 runs out of time.
 
-### Tinygame.end([score])
+### Tinygame methods
+
+#### Tinygame.end([score])
 
 This will end the microgame, optionally setting the player's score.
 
-### Tinygame.win()
+#### Tinygame.win()
 
 Shorthand for `Tinygame.end(1)`.
 
-### Tinygame.lose()
+#### Tinygame.lose()
 
 Shorthand for `Tinygame.end(0)`.
 
