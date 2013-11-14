@@ -55,11 +55,7 @@ var Tinygame = (function() {
 
     window.addEventListener("load", function() {
       timeRemaining.style.width = "0";
-      window.postMessage({
-        type: "play",
-        playTime: Tinygame.playTime,
-        endingTime: Tinygame.endingTime
-      }, "*");
+      window.postMessage({type: "play"}, "*");
       outOfTimeTimeout = setTimeout(function() {
         cleanup();
         window.postMessage({type: "outoftime"}, "*");

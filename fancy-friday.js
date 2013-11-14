@@ -90,11 +90,7 @@ var FancyFriday = (function() {
           microgame.dispatchEvent(new CustomEvent("microgameending"));
           microgame.send("outoftime");
         }, playTime * 1000);
-        microgame.send({
-          type: "play",
-          playTime: playTime,
-          endingTime: endingTime
-        });
+        microgame.send({type: "play"});
       }, FOCUS_CHECK_INTERVAL);
     };
 
