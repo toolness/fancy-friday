@@ -57,6 +57,7 @@ var FancyFriday = (function() {
 
     microgame.microgameState = microgame.MICROGAME_LOADING;
     microgame.score = 0;
+    microgame.autoplay = options.autoplay || false;
 
     microgame.handleMessage = function(data) {
       data = typeof(data) == 'string' ? {type: data} : data;
@@ -74,6 +75,8 @@ var FancyFriday = (function() {
     };
 
     microgame.play = function() {
+      if (microgame.microgameState < microgame.MICROGAME_READY)
+        microgame.autoplay = true;
       if (microgame.microgameState != microgame.MICROGAME_READY) return;
 
       microgame.microgameState = microgame.MICROGAME_PLAYING;
@@ -98,6 +101,10 @@ var FancyFriday = (function() {
 
       microgame.microgameState = microgame.MICROGAME_READY;
       microgame.dispatchEvent(new CustomEvent("microgameready"));
+    });
+
+    microgame.addEventListener("microgameready", function(e) {
+      if (microgame.autoplay) microgame.play();
     });
 
     microgame.addEventListener("microgameending", function(e) {

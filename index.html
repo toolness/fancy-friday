@@ -117,11 +117,8 @@ function playMicrogames() {
     display
       .screen(filename).delay(READ_DELAY)
       .screen().queue(function play(next) {
-        var microgame = FancyFriday.Microgame(url);
+        var microgame = FancyFriday.Microgame(url, {autoplay: true});
 
-        microgame.addEventListener("microgameready", function() {
-          microgame.play();
-        });
         microgame.addEventListener("microgameended", function() {
           var newScore = Math.round(microgame.score * SCORE_MULTIPLIER);
 

@@ -33,6 +33,9 @@ keys:
 * `endingTime` - The amount of time, in seconds, the microgame has
   to show an ending sequence. Defaults to 2.
 
+* `autoplay` - Whether to start playing the microgame once it's done
+  loading. Defaults to `false`.
+
 This constructor returns a microgame instance, which is really just the
 parent `<div>` element with some additional properties and methods
 (enumerated below). This element must be attached to the DOM before it
@@ -68,15 +71,20 @@ but the microgame can set it to any floating-point number between 0 and 1.0.
 This is intended to be a percentage of the maximum points possible in a
 play session: the metagame can scale it as needed.
 
+#### **Microgame::autoplay**
+
+This boolean property determines whether the microgame starts playing
+immediately after it is finished loading.
+
 ### Microgame Methods
 
 #### **Microgame::play()**
 
-Starts the play phase of the microgame. This can only be used when 
-`microgameState` is `MICROGAME_READY`; otherwise, it does nothing.
+If the microgame is still loading, this has the same effect as setting
+`autoplay` to `true`.
 
-Immediately after calling this method, `microgameState` becomes
-`MICROGAME_PLAYING`.
+If used when `microgameState` is `MICROGAME_READY`, this starts the play
+phase of the microgame.
 
 ### Microgame Events
 
