@@ -109,11 +109,12 @@ function showNewScore(display, newScore, cb) {
 function playMicrogames() {
   var display = $("#main .container");
 
+  display.screen("Ready Player One").delay(READ_DELAY);
+
   MICROGAMES.forEach(function(url) {
     var filename = url.split('/').slice(-1)[0];
 
     display
-      .screen("Ready Player One").delay(READ_DELAY)
       .screen(filename).delay(READ_DELAY)
       .screen().queue(function play(next) {
         var microgame = FancyFriday.Microgame(url);
