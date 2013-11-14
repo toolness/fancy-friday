@@ -108,6 +108,10 @@ the microgame's ending sequence is over.
 
 ### Microgame Styling
 
+`ff-microgame` is the class given to the top-level microgame element.
+Its background will show through on any microgames with a transparent
+background.
+
 `ff-time-bar` is the class given to the entire time bar. Changing its
 background will give a different style to the unfilled area of the time
 bar. Its height can also be changed.
