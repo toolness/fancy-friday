@@ -149,9 +149,6 @@ If the message is an object containing a `type` property with the value
 `end`, the metagame will set its corresponding microgame instance's
 `microgameState` property to `MICROGAME_ENDING`.
 
-The microgame can also simply send the text message `win`, which is
-shorthand for `{type: 'end', score: 1}`.
-
 ### Styling
 
 While there are no hard styling requirements for an embedded microgame, the

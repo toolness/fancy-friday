@@ -65,9 +65,7 @@ var Tinygame = (function() {
     window.addEventListener("message", function(event) {
       var data = event.data;
 
-      if (data == 'win') data = {type: 'end', score: 1};
       if (!data) return;
-
       if (data.type == 'end') cleanup();
     });
   }

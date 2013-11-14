@@ -59,7 +59,6 @@ var FancyFriday = (function() {
     microgame.score = 0;
 
     microgame.handleMessage = function(data) {
-      if (data == 'win') data = {type: 'end', score: 1};
       data = typeof(data) == 'string' ? {type: data} : data;
 
       if (!data) return;
