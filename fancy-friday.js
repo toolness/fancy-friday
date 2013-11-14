@@ -83,7 +83,7 @@ var FancyFriday = (function() {
         iframe.contentWindow.focus();
         if (document.activeElement !== iframe) return;
         clearInterval(focusCheckInterval);
-        timeRemaining.style.transition = "width " + playTime + "s";
+        timeRemaining.style.transition = "width linear " + playTime + "s";
         timeRemaining.style.width = "0%";
         outOfTimeTimeout = setTimeout(function() {
           microgame.dispatchEvent(new CustomEvent("microgameending"));
