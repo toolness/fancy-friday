@@ -3,54 +3,149 @@
 <meta name="viewport" content="width=device-width, user-scalable=no">
 <link rel="stylesheet" href="fancy-friday.css">
 <link rel="stylesheet" href="example/c64-pixelized.css">
-<title>Fancy Friday!</title>
+<title>Fancy Friday</title>
 <style>
-footer {
+html, body {
   font-family: 'Commodore 64 Pixelized';
+  height: 100%;
+  margin: 0;
+}
+
+.vcenter {
+  /* Internet Explorer 10 */
+  display:-ms-flexbox;
+  -ms-flex-pack:center;
+  -ms-flex-align:center;
+
+  /* Firefox */
+  display:-moz-box;
+  -moz-box-pack:center;
+  -moz-box-align:center;
+
+  /* Safari, Chrome, and Opera */
+  display:-webkit-box;
+  -webkit-box-pack:center;
+  -webkit-box-align:center;
+
+  /* W3C */
+  display:box;
+  box-pack:center;
+  box-align:center;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+ul.menu {
   font-size: 24px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 250px;
+}
+
+ul.menu li {
+  width: 100%;
+  margin: 10px 0;
+}
+
+ul.menu li a {
+  display: block;
+  color: black;
+  background: white;
+  text-decoration: none;
+  border: 2px solid black;
+  padding: 2px;
+}
+
+ul.menu li a:hover {
   background: black;
   color: white;
-  padding: 2px;
-  z-index: 1;
+}
+
+h1 {
+  text-transform: uppercase;
 }
 </style>
-<a href="https://github.com/toolness/fancy-friday"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 3" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
-<footer>
-  Score: <span id="score">0</span>
-</footer>
+<div id="main" class="screen vcenter">
+  <div class="container">
+    <h1>Fancy Friday</h1>
+    <ul class="menu">
+      <li><a id="start" href="#">Start</a></li>
+      <li><a href="https://github.com/toolness/fancy-friday#readme">Github</a></li>
+    </ul>
+  </div>
+</div>
+<script src="example/jquery-2.0.3.js"></script>
 <script src="fancy-friday.js"></script>
 <script>
-var MICROGAME_URLS = [
+var SCORE_MULTIPLIER = 100;
+var READ_DELAY = 1500;
+var MICROGAMES = [
   "example/game-01.html"
 ];
-var scoreEl = document.getElementById('score');
-var currentMicrogame = null;
 
-// Returns a random integer between min and max
-// Using Math.round() will give you a non-uniform distribution!
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+var score = 0;
+
+function showNewScore(display, newScore, cb) {
+  var h1 = $('<h1></h1>').text(scoreStr(score)).appendTo(display);
+
+  function scoreStr(value) { return 'Score ' + value; }
+
+  function animateScore(value) {
+    h1.delay(10).queue(function(next) {
+      $(this).text(scoreStr(value));
+      next();
+    });
+  }
+
+  while (score < newScore) animateScore(++score);
+  h1.delay(READ_DELAY).queue(function(next) { next(); cb(); });
 }
 
-function playAnotherMicrogame() {
-  var randomIndex = getRandomInt(0, MICROGAME_URLS.length - 1);
-  var microgame = FancyFriday.Microgame(MICROGAME_URLS[randomIndex]);
+function playMicrogames() {
+  var display = $("#main .container");
 
-  microgame.addEventListener("microgameready", function() {
-    if (currentMicrogame)
-      currentMicrogame.parentNode.removeChild(currentMicrogame);
-    currentMicrogame = microgame;
-    microgame.play();
+  MICROGAMES.forEach(function(url) {
+    var filename = url.split('/').slice(-1)[0];
+
+    display
+      .screen("Ready Player One").delay(READ_DELAY)
+      .screen(filename).delay(READ_DELAY)
+      .screen().queue(function play(next) {
+        var microgame = FancyFriday.Microgame(url);
+
+        microgame.addEventListener("microgameready", function() {
+          microgame.play();
+        });
+        microgame.addEventListener("microgameended", function() {
+          var newScore = Math.round(microgame.score * SCORE_MULTIPLIER);
+
+          $(microgame).remove();
+          showNewScore(display, newScore, next);
+        });
+        $("body").append(microgame);
+      });
   });
-  microgame.addEventListener("microgameended", function() {
-    scoreEl.textContent = parseFloat(scoreEl.textContent) + microgame.score;
-    playAnotherMicrogame();
-  });
-  document.body.appendChild(microgame);
+
+  display.delay(READ_DELAY).screen("Game Over");
 };
 
-window.addEventListener("load", playAnotherMicrogame, false);
+$.fn.extend({
+  screen: function(content) {
+    this.queue(function(next) {
+      $(this).empty().append($('<h1></h1>').text(content || ''));
+      next();
+    });
+    return this;
+  }
+});
+
+$("#start").click(function() {
+  playMicrogames();
+  return false;
+});
 </script>
