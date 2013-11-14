@@ -47,7 +47,7 @@ var Tinygame = (function() {
 
     timeRemaining.style.width = "100%";
     timeRemaining.style.height = "100%";
-    timeRemaining.style.transition = "width " + Tinygame.playTime + "s";
+    timeRemaining.style.transition = "width linear " + Tinygame.playTime + "s";
     timeRemaining.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
 
     timeBar.appendChild(timeRemaining);
