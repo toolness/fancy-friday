@@ -69,6 +69,10 @@ ul.menu li a:hover {
 h1 {
   text-transform: uppercase;
 }
+
+.ff-microgame {
+  background: white;
+}
 </style>
 <div id="main" class="screen vcenter">
   <div class="container">
@@ -115,15 +119,14 @@ function playMicrogames() {
     var filename = url.split('/').slice(-1)[0];
 
     display
-      .screen(filename).delay(READ_DELAY)
-      .screen().queue(function play(next) {
+      .screen(filename).delay(READ_DELAY).queue(function play(next) {
         var microgame = FancyFriday.Microgame(url, {autoplay: true});
 
         microgame.addEventListener("microgameended", function() {
           var newScore = Math.round(microgame.score * SCORE_MULTIPLIER);
 
           $(microgame).remove();
-          showNewScore(display, newScore, next);
+          showNewScore(display.empty(), newScore, next);
         });
         $("body").append(microgame);
       });
