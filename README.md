@@ -33,6 +33,9 @@ keys:
 * `endingTime` - The amount of time, in seconds, the microgame has
   to show an ending sequence. Defaults to 2.
 
+* `difficulty` - The difficulty of the microgame. 0 is easy, 1 is
+  medium, 2 is hard. Defaults to 0.
+
 * `autoplay` - Whether to start playing the microgame once it's done
   loading. Defaults to `false`.
 
@@ -138,6 +141,8 @@ in, and can be accessed by parsing the value of [location.search][]:
 * `endingTime` is the number of seconds the microgame has to show an
   ending sequence.
 
+* `difficulty` is the difficulty level. 0 is easy, 1 is medium, 2 is hard.
+
 ### Received Events
 
 The parent metagame sends a variety of [MessageEvent][] instances
@@ -193,6 +198,10 @@ The number of seconds the player has to play the microgame. Read-only.
 
 The number of seconds the microgame has to show an ending sequence.
 Read-only.
+
+#### Tinygame.difficulty
+
+The difficulty level of the microgame. 0 is easy, 1 is medium, 2 is hard.
 
 #### Tinygame.onplay
 

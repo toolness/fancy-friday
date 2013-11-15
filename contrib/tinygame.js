@@ -1,14 +1,14 @@
 var Tinygame = (function() {
-  var DEFAULTS = {playTime: 5, endingTime: 2};
+  var DEFAULTS = {playTime: 5, endingTime: 2, difficulty: 0};
 
   var Tinygame = {};
   var queryArgs = getQueryArgs(window.location.search);
   var inDevelopmentMode = !('playTime' in queryArgs) || queryArgs.dev == '1';
   var metagame = inDevelopmentMode ? window : window.parent;
 
-  function getTimeArg(name) {
+  function getNumericArg(name) {
     value = parseFloat(queryArgs[name]);
-    return (isNaN(value) || value <= 0) ? DEFAULTS[name] : value;
+    return (isNaN(value) || value < 0) ? DEFAULTS[name] : value;
   }
 
   // This is based on http://stackoverflow.com/a/2091331/2422398.
@@ -70,8 +70,9 @@ var Tinygame = (function() {
     });
   }
 
-  Tinygame.playTime = getTimeArg('playTime');
-  Tinygame.endingTime = getTimeArg('endingTime');
+  Tinygame.playTime = getNumericArg('playTime');
+  Tinygame.endingTime = getNumericArg('endingTime');
+  Tinygame.difficulty = getNumericArg('difficulty');
   Tinygame.end = function(score) {
     var data = {type: 'end'};
     if (typeof(score) == 'number') data.score = score;
