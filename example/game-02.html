@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="c64-pixelized.css">
+<style>
+  html {
+    height: 100%;
+  }
+
+  html.win {
+    background-color: #00ff00;
+  }
+
+  html.lose {
+    background-color: #ff0000;
+  }
+
+  .instructions {
+    font-family: 'Commodore 64 Pixelized', monospace;
+    font-weight: normal;
+    font-size: 32px;
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .word {
+    font-family: 'Commodore 64 Pixelized', monospace;
+    font-weight: normal;
+    font-size: 60px;
+    position:absolute;
+  }
+
+  .word.ended {
+    opacity: 0;
+  }
+
+  .letter {
+    color: black;
+    transition: opacity .1s;
+  }
+
+  .letter.typed {
+    opacity: 0;
+  }
+
+</style>
+<title>Game 2</title>
+<br>
+<div class="instructions">TYPE THE WORD</div>
+<div class="word"></div>
+<script type="text/javascript" src="jquery-2.0.3.js"></script>
+<script src="../contrib/tinygame.js"></script>
+<script>
+  var html = $('html');
+  var instructions = $('.instructions');
+  var word = $('.word');
+  var isEnded = false;
+
+  var words = [ 'FATTINGTON',
+                'EXOTHERMIC',
+                'NULLIFICATION',
+                'ADORNMENT',
+                'BROTHERHOOD',
+                'INCONCEIVABLE',
+                'TRACHEA'];
+
+  var currentLetterIndex = 0;
+
+  $(document).ready(function() {
+    $(window).resize(function(){
+      $('.word').css({
+        left: ($(window).width()
+          - $('.word').outerWidth())/2,
+        top: ($(window).height()
+          - $('.word').outerHeight())/2
+      });
+    });
+  });
+
+  // Returns a random integer between min and max
+  // Using Math.round() will give you a non-uniform distribution!
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  function getRandomWord() {
+    return words[getRandomInt(0,words.length-1)];
+  }
+
+  function win() {
+    Tinygame.win();
+    instructions.html('HOORAY');
+    html.addClass('win');
+    word.addClass('ended');
+    isEnded = true;
+  }
+
+  Tinygame.onplay = function() {
+    var randomWord = getRandomWord();
+    for (var i = 0; i < randomWord.length; i++) {
+      word.append('<span class="letter">' + randomWord[i] + '</span>');
+    }
+    $(window).resize();
+  };
+
+  document.onkeydown = function handleKeyPress(e) {
+    if (!isEnded) {
+      var children = word.children();
+      var wordLength = children.length;
+      var currentLetter = children.eq(currentLetterIndex);
+      if (String.fromCharCode(e.keyCode) == currentLetter.html()) {
+        currentLetter.addClass('typed');
+        currentLetterIndex++;
+        if (currentLetterIndex >= wordLength) {
+          win();
+        }
+      }
+    }
+  }
+
+  Tinygame.onoutoftime = function() {
+    instructions.html('U SUK');
+    html.addClass('lose');
+    word.addClass('ended');
+    isEnded = true;
+  };
+</script>
