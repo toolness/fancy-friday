@@ -89,7 +89,8 @@ h1 {
 var SCORE_MULTIPLIER = 100;
 var READ_DELAY = 1500;
 var MICROGAMES = [
-  "example/game-01.html"
+  "example/game-01.html",
+  "example/game-02.html"
 ];
 
 var score = 0;
@@ -123,7 +124,7 @@ function playMicrogames() {
         var microgame = FancyFriday.Microgame(url, {autoplay: true});
 
         microgame.addEventListener("microgameended", function() {
-          var newScore = Math.round(microgame.score * SCORE_MULTIPLIER);
+          var newScore = score + Math.round(microgame.score * SCORE_MULTIPLIER);
 
           $(microgame).remove();
           showNewScore(display.empty(), newScore, next);
