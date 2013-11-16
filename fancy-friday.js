@@ -2,7 +2,7 @@ var FancyFriday = (function() {
   var FOCUS_CHECK_INTERVAL = 10;
   var DEFAULT_PLAY_TIME = 5;
   var DEFAULT_ENDING_TIME = 2;
-  var DEFAULT_DIFFICULTY = 0;
+  var DEFAULT_DIFFICULTY = "easy";
   var SANDBOX_PERMISSIONS = [
     'allow-same-origin',
     'allow-scripts',
@@ -25,7 +25,7 @@ var FancyFriday = (function() {
     var timeBar = document.createElement('div');
     var timeRemaining = document.createElement('div');
     var iframe = document.createElement('iframe');
-    var difficulty = options.difficulty 
+    var difficulty = options.difficulty || DEFAULT_DIFFICULTY;
     var playTime = options.playTime || DEFAULT_PLAY_TIME;
     var endingTime = options.endingTime || DEFAULT_ENDING_TIME;
     var outOfTimeTimeout;

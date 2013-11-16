@@ -86,8 +86,8 @@ h1 {
 <script src="example/jquery-2.0.3.js"></script>
 <script src="fancy-friday.js"></script>
 <script>
-var SCORE_MULTIPLIER = [100, 125, 150];
-var PLAY_TIME = [5, 4, 3];
+var SCORE_MULTIPLIER = {easy: 100, medium: 125, hard: 150};
+var PLAY_TIME = {easy: 5, medium: 4, hard: 3};
 var READ_DELAY = 1500;
 var MICROGAMES = [
   "example/game-01.html",
@@ -150,11 +150,11 @@ $("#start").click(function() {
   var display = $("#main .container");
 
   display.screen("Ready Player One").delay(READ_DELAY);
-  playMicrogames(display, 0);
+  playMicrogames(display, 'easy');
   display.screen("Getting Harder Now...").delay(READ_DELAY);
-  playMicrogames(display, 1);
+  playMicrogames(display, 'medium');
   display.screen("Maximum Difficulty!").delay(READ_DELAY);
-  playMicrogames(display, 2);
+  playMicrogames(display, 'hard');
   display.delay(READ_DELAY).screen("Game Over");
 
   return false;
