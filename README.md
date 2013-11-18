@@ -195,15 +195,27 @@ metagame.
 
 The number of seconds the player has to play the microgame. Read-only.
 
+If this isn't passed through the querystring, this value is taken
+from the `data-playtime` attribute of the script tag that includes
+`tinygame.js`. If that isn't provided, a default value of 5 is used.
+
 #### Tinygame.endingTime
 
 The number of seconds the microgame has to show an ending sequence.
 Read-only.
 
+If this isn't passed through the querystring, this value is taken
+from the `data-endingtime` attribute of the script tag that includes
+`tinygame.js`. If that isn't provided, a default value of 2 is used.
+
 #### Tinygame.difficulty
 
 The difficulty level of the microgame, as a string. Possible values are
 `easy`, `medium`, and `hard`.
+
+If this isn't passed through the querystring, this value is taken
+from the `data-difficulty` attribute of the script tag that includes
+`tinygame.js`. If that isn't provided, a default value of `easy` is used.
 
 #### Tinygame.onplay
 
