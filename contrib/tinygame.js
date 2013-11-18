@@ -1,5 +1,5 @@
 var Tinygame = (function() {
-  var DEFAULTS = {playTime: 5, endingTime: 2};
+  var DEFAULTS = {playTime: 5, endingTime: 2, difficulty: "easy"};
 
   var Tinygame = {};
   var queryArgs = getQueryArgs(window.location.search);
@@ -72,6 +72,7 @@ var Tinygame = (function() {
 
   Tinygame.playTime = getTimeArg('playTime');
   Tinygame.endingTime = getTimeArg('endingTime');
+  Tinygame.difficulty = queryArgs.difficulty || DEFAULTS.difficulty;
   Tinygame.end = function(score) {
     var data = {type: 'end'};
     if (typeof(score) == 'number') data.score = score;

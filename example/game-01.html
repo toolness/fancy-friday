@@ -28,6 +28,8 @@ button {
 <button autocomplete="off">tap me</button>
 <script src="../contrib/tinygame.js"></script>
 <script>
+var INTERVAL_MS = {easy: 1700, medium: 1400, hard: 1100};
+
 var html = document.querySelector('html');
 var button = document.querySelector('button');
 var interval;
@@ -56,7 +58,7 @@ button.ontouchstart = button.onmousedown = win;
 onload = moveButton;
 
 Tinygame.onplay = function() {
-  interval = setInterval(moveButton, 1500);
+  interval = setInterval(moveButton, INTERVAL_MS[Tinygame.difficulty]);
   moveButton();
 };
 

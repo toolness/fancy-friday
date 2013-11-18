@@ -86,7 +86,8 @@ h1 {
 <script src="example/jquery-2.0.3.js"></script>
 <script src="fancy-friday.js"></script>
 <script>
-var SCORE_MULTIPLIER = 100;
+var SCORE_MULTIPLIER = {easy: 100, medium: 125, hard: 150};
+var PLAY_TIME = {easy: 5, medium: 4, hard: 3};
 var READ_DELAY = 1500;
 var MICROGAMES = [
   "example/game-01.html",
@@ -111,20 +112,21 @@ function showNewScore(display, newScore, cb) {
   h1.delay(READ_DELAY).queue(function(next) { next(); cb(); });
 }
 
-function playMicrogames() {
-  var display = $("#main .container");
-
-  display.screen("Ready Player One").delay(READ_DELAY);
-
+function playMicrogames(display, difficulty) {
   MICROGAMES.forEach(function(url) {
     var filename = url.split('/').slice(-1)[0];
 
     display
       .screen(filename).delay(READ_DELAY).queue(function play(next) {
-        var microgame = FancyFriday.Microgame(url, {autoplay: true});
+        var microgame = FancyFriday.Microgame(url, {
+          autoplay: true,
+          difficulty: difficulty,
+          playTime: PLAY_TIME[difficulty]
+        });
 
         microgame.addEventListener("microgameended", function() {
-          var newScore = score + Math.round(microgame.score * SCORE_MULTIPLIER);
+          var newScore = score + Math.round(microgame.score *
+                                            SCORE_MULTIPLIER[difficulty]);
 
           $(microgame).remove();
           showNewScore(display.empty(), newScore, next);
@@ -132,8 +134,6 @@ function playMicrogames() {
         $("body").append(microgame);
       });
   });
-
-  display.delay(READ_DELAY).screen("Game Over");
 };
 
 $.fn.extend({
@@ -147,7 +147,16 @@ $.fn.extend({
 });
 
 $("#start").click(function() {
-  playMicrogames();
+  var display = $("#main .container");
+
+  display.screen("Ready Player One").delay(READ_DELAY);
+  playMicrogames(display, 'easy');
+  display.screen("Getting Harder Now...").delay(READ_DELAY);
+  playMicrogames(display, 'medium');
+  display.screen("Maximum Difficulty!").delay(READ_DELAY);
+  playMicrogames(display, 'hard');
+  display.delay(READ_DELAY).screen("Game Over");
+
   return false;
 });
 </script>
