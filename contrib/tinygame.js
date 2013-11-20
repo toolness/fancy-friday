@@ -63,6 +63,17 @@ var Tinygame = (function() {
     timeBar.appendChild(timeRemaining);
     document.body.appendChild(timeBar);
 
+    if (window.parent !== window)
+      // The user may be in an editor like Thimble or jsbin; we'll bind
+      // alt-R to make it easy for the user to reload the page and start
+      // the microgame over.
+      window.addEventListener("keydown", function(event) {
+        if (event.altKey && String.fromCharCode(event.keyCode) == 'R') {
+          event.preventDefault();
+          window.location.reload();
+        }
+      }, true);
+
     window.addEventListener("load", function() {
       timeRemaining.style.width = "0";
       window.postMessage({type: "play"}, "*");
