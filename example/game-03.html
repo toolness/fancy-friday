@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="c64-pixelized.css">
+<style>
+html {
+  height: 100%;
+  text-align: center;
+}
+
+.instructions {
+  font-family: 'Commodore 64 Pixelized', monospace;
+  font-weight: normal;
+  font-size: 32px;
+  text-align: center;
+  margin-top: 30px;
+}
+</style>
+<title>Game 3</title>
+<div class="instructions">GO RIGHT</div>
+<br>
+<canvas id="canvas"></canvas>
+<script type="text/javascript" src="jquery-2.0.3.js"></script>
+<script src="./coquette-min.js"></script>
+<script src="../contrib/tinygame.js"></script>
+<script>
+  var Game = function (opts) {
+    var WIDTH = 500;
+    var HEIGHT = 150;
+    var coq = this.coq = new Coquette(this, "canvas", WIDTH, HEIGHT, "#000");
+    this.gameover = false;
+
+    this.win = function win () {
+      this.gameover = true;
+      $('.instructions').html('HOORAY');
+      Tinygame.win();
+    }
+
+    this.lose = function lose () {
+      this.gameover = true;
+      $('.instructions').html('U SUK');
+      Tinygame.lose();
+    }
+
+    var speed = (WIDTH*2)/(opts.playTime*60);
+
+    coq.entities.create(Player, { 
+      pos: { x: 10, y: 131 }, 
+      speed: speed, 
+      color: "#f07",
+      zindex: -1
+    });
+
+    var crushers = ({
+      'easy': 3,
+      'medium': 4,
+      'hard': 5
+    })[opts.difficulty];
+
+    function randStart () {
+      // start at one of the specified possibilities
+      var startYs = [0, 50, 100];
+      var i = Math.floor(Math.random() * startYs.length);
+      return startYs[i];
+    }
+
+    for (var i = 0; i < crushers; i++) {
+      var x = (WIDTH/crushers) * (i+1) - (WIDTH/crushers)/2 ;
+      var y = randStart();
+      coq.entities.create(Crusher, { 
+        pos: { x: x, y: y },
+        speeds: {
+          rising: speed * 0.7,
+          falling: speed * 3.5 
+        }
+      });
+    }
+  };
+
+  var Player = function (game, settings) {
+    this.game = game; 
+    var coq = this.game.coq;
+
+    // set some defaults
+    this.size = { x: 9, y: 9 };
+    this.boundingBox = this.game.coq.collider.RECTANGLE;
+
+    // copy in settings, potentially clobbering defaults
+    for (var i in settings) {
+      this[i] = settings[i];
+    }
+
+    // define our draw, update, and collision methods
+    this.draw = function (ctx) {
+      ctx.fillStyle = settings.color;
+      if (!this.squished) {
+        ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+      }
+      else {
+        var factor = 2;
+        ctx.fillRect(
+          this.pos.x - (this.size.x*factor)/2, 
+          this.pos.y + (this.size.y*(factor-1)/factor), 
+          this.size.x * factor, 
+          this.size.y / factor
+        );
+      }
+    };
+    this.update = function () {
+      if (!this.game.gameover) {
+        if (this.pos.x >= 490) {
+          this.game.win();
+        }
+        else {
+          if (coq.inputter.down(coq.inputter.RIGHT_ARROW)) this.pos.x += this.speed; 
+          if (coq.inputter.down(coq.inputter.LEFT_ARROW)) this.pos.x -= this.speed; 
+        }
+      }
+    };
+    this.collision = function (other, type) {
+      this.squished = true;
+      this.game.lose();
+    };
+  };
+
+  var Crusher = function (game, settings) {
+    this.game = game;
+    var coq = this.game.coq;
+
+    // set some defaults
+    this.boundingBox = this.game.coq.collider.RECTANGLE;
+    this.color = "#aaa";
+    this.size = { x: 20, y: 40 };
+    this.sweep = {
+      top: 0,
+      bottom: 99 
+    };
+    this.speeds = {
+      falling: 8,
+      rising: 2
+    };
+
+    // copy in settings, potentially clobbering defaults
+    for (var i in settings) {
+      this[i] = settings[i];
+    }
+
+    // define our draw and update methods
+    this.draw = function (ctx) {
+      ctx.fillStyle = this.color;
+      ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+    };
+    this.update = function () {
+      this[this.state]();
+    };
+
+    // some internals
+    this.state = 'falling';
+    this.falling = function () {
+      if (this.pos.y >= this.sweep.bottom) {
+        this.state = "rising";
+      }
+      else {
+        this.pos.y += this.speeds.falling;
+        this.pos.y = Math.min(this.pos.y, this.sweep.bottom);
+      }
+    };
+    this.rising = function () {
+      if (this.pos.y <= this.sweep.top) {
+        this.state = "falling";
+      }
+      else {
+        this.pos.y -= this.speeds.rising;
+        this.pos.y = Math.max(this.pos.y, this.sweep.top);
+      }
+    };
+  };
+
+  Tinygame.onplay = function () {
+    var game = new Game({
+      playTime: Tinygame.playTime,
+      difficulty: Tinygame.difficulty
+    });
+    Tinygame.onoutoftime = game.lose.bind(game);
+  };
+</script>
