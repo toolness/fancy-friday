@@ -5,20 +5,39 @@
 html {
   height: 100%;
   text-align: center;
+  font-family: 'Commodore 64 Pixelized', monospace;
+  font-weight: normal;
 }
 
 .instructions {
-  font-family: 'Commodore 64 Pixelized', monospace;
-  font-weight: normal;
   font-size: 32px;
   text-align: center;
   margin-top: 30px;
+}
+
+.controls {
+  margin: 1em;
+}
+
+.key {
+  display: inline-block;
+  background-color: #ddd;
+  padding: 8px;
+  margin: 2px;
+  border-radius: 5px;
+  box-shadow: -2px 2px 2px #888;
 }
 </style>
 <title>Game 3</title>
 <div class="instructions">GO RIGHT</div>
 <br>
 <canvas id="canvas"></canvas>
+<br>
+<div class="controls">
+  <span class="key">←</span> <span class="key">→</span>
+  or
+  <span class="key">A</span> <span class="key">D</span>
+</div>
 <script type="text/javascript" src="jquery-2.0.3.js"></script>
 <script src="./coquette.js"></script>
 <script src="../contrib/tinygame.js"></script>
@@ -111,8 +130,10 @@ html {
           this.game.win();
         }
         else {
-          if (coq.inputter.down(coq.inputter.RIGHT_ARROW)) this.pos.x += this.speed; 
-          if (coq.inputter.down(coq.inputter.LEFT_ARROW)) this.pos.x -= this.speed; 
+          var right = coq.inputter.down(coq.inputter.RIGHT_ARROW) || coq.inputter.down(coq.inputter.D);
+          var left = coq.inputter.down(coq.inputter.LEFT_ARROW) || coq.inputter.down(coq.inputter.A);
+          if (right) this.pos.x += this.speed; 
+          if (left) this.pos.x -= this.speed; 
         }
       }
     };
