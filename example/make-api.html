@@ -169,6 +169,25 @@ function playMicrogames(display, difficulty) {
   });
 };
 
+function parseAuthor(make) {
+  var author = {
+    profileURL: 'http://' + make.username + '.' + MAKES_DOMAIN,
+    name: make.username
+  };
+
+  make.tags.forEach(function(tag) {
+    match = decodeURIComponent(tag)
+      .match(/^twitter-author:([A-Za-z0-9_\-]+)$/);
+
+    if (match) {
+      author.name = match[1];
+      author.profileURL = 'http://twitter.com/' + author.name;
+    }
+  });
+
+  return author;
+}
+
 $.fn.extend({
   screen: function(content) {
     this.queue(function(next) {
@@ -186,13 +205,15 @@ $.get(MAKE_API_URL + '/make/search?tags=' + TAG_NAME, function(data) {
 
   data.makes.forEach(function(make) {
     var item = template.clone().appendTo(featuringList);
+
+    make.author = parseAuthor(make);
     microgames.push(make);
     $('.remix', item)
       .attr('href', make.url + '/edit')
       .text(make.title);
     $('.profile', item)
-      .attr('href', 'http://' + make.username + '.' + MAKES_DOMAIN)
-      .text(make.username);
+      .attr('href', make.author.profileURL)
+      .text(make.author.name);
   });
 
   featuring.slideDown();
