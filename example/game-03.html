@@ -15,8 +15,9 @@ html {
   margin-top: 30px;
 }
 
-.controls {
-  margin: 1em;
+.controls button {
+  font-size: 2em;
+  margin: 0.5em;
 }
 
 .key {
@@ -25,7 +26,6 @@ html {
   padding: 8px;
   margin: 2px;
   border-radius: 5px;
-  box-shadow: -2px 2px 2px #888;
 }
 </style>
 <title>Game 3</title>
@@ -34,9 +34,7 @@ html {
 <canvas id="canvas"></canvas>
 <br>
 <div class="controls">
-  <span class="key">←</span> <span class="key">→</span>
-  or
-  <span class="key">A</span> <span class="key">D</span>
+    <button class="key left-btn">←</button> <button class="key right-btn">→</button>
 </div>
 <script type="text/javascript" src="jquery-2.0.3.js"></script>
 <script src="./coquette.js"></script>
@@ -57,11 +55,37 @@ html {
     };
   }
 
+  var Controls = function (coq) {
+    var self = this;
+
+    var leftBtn = false;
+    var rightBtn = false;
+
+    self.goLeft = function goLeft () {
+      return coq.inputter.isDown(coq.inputter.LEFT_ARROW) 
+          || coq.inputter.isDown(coq.inputter.A)
+          || leftBtn;
+    };
+
+    self.goRight = function goRight () {
+      return coq.inputter.isDown(coq.inputter.RIGHT_ARROW) 
+          || coq.inputter.isDown(coq.inputter.D)
+          || rightBtn;
+    };
+
+    $('.left-btn').on('mousedown', function () { leftBtn = true; });
+    $('.left-btn').on('mouseup', function () { leftBtn = false; });
+    $('.right-btn').on('mousedown', function () { rightBtn = true; });
+    $('.right-btn').on('mouseup', function () { rightBtn = false; });
+  };
+
   var Game = function (opts) {
     var WIDTH = 500;
     var HEIGHT = 150;
     var coq = this.coq = new Coquette(this, "canvas", WIDTH, HEIGHT, "#000");
     this.gameover = false;
+
+    this.controls = new Controls(coq);
 
     this.win = function win () {
       this.gameover = true;
@@ -149,10 +173,8 @@ html {
           this.game.win();
         }
         else {
-          var right = coq.inputter.isDown(coq.inputter.RIGHT_ARROW) || coq.inputter.isDown(coq.inputter.D);
-          var left = coq.inputter.isDown(coq.inputter.LEFT_ARROW) || coq.inputter.isDown(coq.inputter.A);
-          if (right) this.center.x += this.speed;
-          if (left) this.center.x -= this.speed;
+          if (this.game.controls.goRight()) this.center.x += this.speed;
+          if (this.game.controls.goLeft()) this.center.x -= this.speed;
         }
       }
     };
