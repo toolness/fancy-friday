@@ -130,8 +130,8 @@ html {
           this.game.win();
         }
         else {
-          var right = coq.inputter.down(coq.inputter.RIGHT_ARROW) || coq.inputter.down(coq.inputter.D);
-          var left = coq.inputter.down(coq.inputter.LEFT_ARROW) || coq.inputter.down(coq.inputter.A);
+          var right = coq.inputter.isDown(coq.inputter.RIGHT_ARROW) || coq.inputter.isDown(coq.inputter.D);
+          var left = coq.inputter.isDown(coq.inputter.LEFT_ARROW) || coq.inputter.isDown(coq.inputter.A);
           if (right) this.pos.x += this.speed; 
           if (left) this.pos.x -= this.speed; 
         }
