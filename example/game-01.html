@@ -6,18 +6,73 @@ html {
   height: 100%;
 }
 
+@keyframes flying {
+  /* Each sprite frame is 80px wide, so we just increment
+   * background-position by that amount each frame.
+   */
+
+  10% {
+    background-position: 0px 0px;
+  }
+
+  20% {
+    background-position: -80px 0px;
+  }
+
+  30% {
+    background-position: -160px 0px;    
+  }
+
+  40% {
+    background-position: -240px 0px;
+  }
+
+  50% {
+    background-position: -320px 0px;
+  }
+
+  60% {
+    background-position: -400px 0px;
+  }
+
+  70% {
+    background-position: -480px 0px;
+  }
+
+  80% {
+    background-position: -560px 0px;
+  }
+
+  90% {
+    background-position: -640px 0px;
+  }
+
+  100% {
+    background-position: -720px 0px;
+  }
+}
+
+.fly {
+  width: 80px;
+  height: 92px;
+  margin: 0 auto;
+  background-image: url(fly-flying.png);
+  animation-duration: 1s;
+  animation-name: flying;
+  animation-timing-function: step-start;
+  animation-iteration-count: infinite;
+}
+
 button:hover {
-  background: black;
-  color: white;
   cursor: pointer;
 }
 
 button {
   font-family: 'Commodore 64 Pixelized', monospace;
   font-weight: normal;
-  border: 2px solid black;
+  border: none;
   padding: 4px;
-  background: white;
+  background: transparent;
   font-size: 24px;
   position: absolute;
   transition: top 1s, left 1s;
@@ -25,7 +80,10 @@ button {
 </style>
 <title>Game 1</title>
 <br>
-<button autocomplete="off">tap me</button>
+<button autocomplete="off">
+  <div class="fly"></div>
+  <label>tap me</label>
+</button>
 <script src="../contrib/tinygame.js"></script>
 <script>
 var INTERVAL_MS = {easy: 1700, medium: 1400, hard: 1100};
@@ -63,7 +121,7 @@ Tinygame.onplay = function() {
 };
 
 Tinygame.onoutoftime = function() {
-  button.textContent = 'U SUK';
+  button.querySelector('label').textContent = 'U SUK';
   html.style.backgroundColor = "#ff0000";
   clearInterval(interval);
 };
