@@ -4,6 +4,7 @@
 <style>
 html {
   height: 100%;
+  overflow: hidden;
 }
 
 @keyframes flying {
@@ -52,15 +53,40 @@ html {
   }
 }
 
+@keyframes dying {
+  10% {
+    margin-top: 0px;
+  }
+
+  40% {
+    margin-top: 0px;
+    opacity: 1.0;
+  }
+
+  100% {
+    margin-top: 1000px;
+    opacity: 0;
+  }
+}
+
 .fly {
   width: 80px;
   height: 92px;
   margin: 0 auto;
   background-image: url(fly-flying.png);
+}
+
+.fly.flying {
   animation-duration: 1s;
   animation-name: flying;
   animation-timing-function: step-start;
   animation-iteration-count: infinite;
+}
+
+.fly.dying {
+  animation-duration: 2s;
+  animation-name: dying;
+  animation-fill-mode: forwards;
 }
 
 button:hover {
@@ -68,20 +94,28 @@ button:hover {
 }
 
 button {
-  font-family: 'Commodore 64 Pixelized', monospace;
-  font-weight: normal;
   border: none;
   background: transparent;
-  font-size: 24px;
   position: absolute;
   transition: top 1s, left 1s;
   width: 140px;
+  height: 140px;
+}
+
+button label {
+  position: absolute;
+  width: 100%;
+  top: 100px;
+  left: 0px;
+  font-family: 'Commodore 64 Pixelized', monospace;
+  font-weight: normal;
+  font-size: 24px;
 }
 </style>
 <title>Game 1</title>
 <br>
 <button autocomplete="off">
-  <div class="fly"></div>
+  <div class="fly flying"></div>
   <label>tap me</label>
 </button>
 <script src="../contrib/tinygame.js"></script>
@@ -90,6 +124,8 @@ var INTERVAL_MS = {easy: 1700, medium: 1400, hard: 1100};
 
 var html = document.querySelector('html');
 var button = document.querySelector('button');
+var buttonLabel = button.querySelector('label');
+var buttonFly = button.querySelector('.fly');
 var interval;
 
 // Returns a random integer between min and max
@@ -100,7 +136,9 @@ function getRandomInt(min, max) {
 
 function win() {
   Tinygame.win();
-  button.textContent = 'HOORAY';
+  buttonLabel.textContent = 'HOORAY';
+  buttonFly.classList.remove('flying');
+  buttonFly.classList.add('dying');
   html.style.backgroundColor = "#00ff00";
   clearInterval(interval);
 }
