@@ -47,6 +47,8 @@ var Tinygame = (function() {
       }
     }
 
+    function addTimeBar() { document.body.appendChild(timeBar); }
+
     timeBar.style.position = "absolute";
     timeBar.style.top = "0";
     timeBar.style.left = "0";
@@ -61,7 +63,10 @@ var Tinygame = (function() {
     timeRemaining.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
 
     timeBar.appendChild(timeRemaining);
-    document.body.appendChild(timeBar);
+    if (document.body)
+      addTimeBar();
+    else
+      window.addEventListener("DOMContentLoaded", addTimeBar, false);
 
     if (window.parent !== window)
       // The user may be in an editor like Thimble or jsbin; we'll bind
