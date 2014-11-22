@@ -37,6 +37,8 @@ var Tinygame = (function() {
     var timeBar = document.createElement('div');
     var timeRemaining = document.createElement('div');
     var outOfTimeTimeout;
+    var hasStartedPlaying = false;
+    var inCustomLoad = false;
 
     function cleanup() {
       clearTimeout(outOfTimeTimeout);
@@ -45,6 +47,17 @@ var Tinygame = (function() {
         timeBar = null;
         timeRemaining = null;
       }
+    }
+
+    function startPlaying() {
+      if (hasStartedPlaying) return;
+      hasStartedPlaying = true;
+      timeRemaining.style.width = "0";
+      window.postMessage({type: "play"}, "*");
+      outOfTimeTimeout = setTimeout(function() {
+        cleanup();
+        window.postMessage({type: "outoftime"}, "*");
+      }, Tinygame.playTime * 1000);
     }
 
     function addTimeBar() { document.body.appendChild(timeBar); }
@@ -80,25 +93,35 @@ var Tinygame = (function() {
       }, true);
 
     window.addEventListener("load", function() {
-      timeRemaining.style.width = "0";
-      window.postMessage({type: "play"}, "*");
-      outOfTimeTimeout = setTimeout(function() {
-        cleanup();
-        window.postMessage({type: "outoftime"}, "*");
-      }, Tinygame.playTime * 1000);
+      setTimeout(function() {
+        if (!inCustomLoad) startPlaying();
+      }, 100);
     }, false);
 
     window.addEventListener("message", function(event) {
       var data = event.data;
 
       if (!data) return;
-      if (data.type == 'end') cleanup();
+      if (data.type == 'customloadstart') {
+        inCustomLoad = true;
+      } else if (data.type == 'customloadend' && inCustomLoad) {
+        inCustomLoad = false;
+        startPlaying();
+      } else if (data.type == 'end') {
+        cleanup();
+      }
     });
   }
 
   Tinygame.playTime = getTimeArg('playTime');
   Tinygame.endingTime = getTimeArg('endingTime');
   Tinygame.difficulty = getArg('difficulty');
+  Tinygame.loading = function() {
+    metagame.postMessage({type: 'customloadstart'}, '*');
+  };
+  Tinygame.loaded = function() {
+    metagame.postMessage({type: 'customloadend'}, '*');
+  };
   Tinygame.end = function(score) {
     var data = {type: 'end'};
     if (typeof(score) == 'number') data.score = score;

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+#content {
+  opacity: 0;
+  transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
+}
+
+#content.loaded {
+  opacity: 1;
+}
+</style>
+<title>Custom Load Example</title>
+<div id="content">
+  <p>This "game" is just an example of custom loading.</p>
+  <p>If it worked, the time bar above should have started counting down as soon as this text was visible&mdash;<em>not</em> 2 seconds before.</p>
+  <button onclick="Tinygame.win()">Win Game</button>
+  <button onclick="Tinygame.lose()">Lose Game</button>
+</div>
+<script src="../contrib/tinygame.js"></script>
+<script>
+Tinygame.loading();
+
+onload = function() {
+  setTimeout(function() {
+    document.getElementById("content").setAttribute("class", "loaded");
+    Tinygame.loaded();
+  }, 2000);
+};
+</script>
