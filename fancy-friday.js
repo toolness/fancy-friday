@@ -125,6 +125,10 @@ var FancyFriday = (function() {
     loadedTimeout = setTimeout(microgame.ready, maxLoadTime * 1000);
 
     iframe.addEventListener("load", function() {
+      // In Chrome (and possibly other browsers), load events are
+      // received before message events, even if messages were
+      // posted by a window before its load event fired. So we'll
+      // wait a bit to see if we get a customloadstart message.
       setTimeout(function() {
         if (inCustomLoad ||
             microgame.microgameState != microgame.MICROGAME_LOADING)
