@@ -27,6 +27,9 @@ keys:
   it also prevents plug-ins from being used; set this option to `null`
   to disable sandboxing entirely.
 
+* `maxLoadTime` - The amount of time, in seconds, the iframe has to load
+  before it's forcibly regarded as being ready to play.
+
 * `playTime` - The amount of time, in seconds, the player has to
   complete the microgame. Defaults to 5.
 
@@ -159,14 +162,26 @@ least, of a `type` property that can have any of the following values:
 ### Sent Events
 
 The microgame can send events to its metagame via
-[window.parent.postMessage][postMessage].
+[window.parent.postMessage][postMessage]. All messages should be objects.
 
-If the message is an object containing a `score` property, the microgame's
-score is updated in the metagame.
+If the message has a `score` property, the microgame's score is updated
+in the metagame.
 
-If the message is an object containing a `type` property with the value
-`end`, the metagame will set its corresponding microgame instance's
-`microgameState` property to `MICROGAME_ENDING`.
+The message can also have a `type` property corresponding to one of the
+following strings:
+
+* `customloadstart` - The metagame will wait for the microgame to send
+  a `customloadend` message before setting its corresponding microgame 
+  instance's `microgameState` property to `MICROGAME_READY`. This message
+  *must* be posted before the microgame iframe's `load` event has fired,
+  or else the default behavior of setting `microgameState` to
+  `MICROGAME_READY` when the load event fires will occur.
+
+* `customloadend` - The metagame will set its corresponding microgame
+  instance's `microgameState` property to `MICROGAME_READY`.
+
+* `end` - The metagame will set its corresponding microgame instance's
+  `microgameState` property to `MICROGAME_ENDING`.
 
 ### Styling
 
@@ -240,6 +255,25 @@ Shorthand for `Tinygame.end(1)`.
 #### Tinygame.lose()
 
 Shorthand for `Tinygame.end(0)`.
+
+#### Tinygame.loading()
+
+This will send a `customloadstart` event to the parent metagame, which
+gives the microgame time to asynchronously load assets even after its
+page's `load` event has fired. You need to call this before your page's
+`load` event has fired for it to actually do anything, though!
+
+Note also that the game can't take forever to load. After a maximum
+loading period has elapsed, the parent metagame may forcibly regard the
+microgame as being "ready to play" and make the player play your half-ready
+game, which will hopefully result in hilarity.
+
+#### Tinygame.loaded()
+
+This will send a `customloadend` event to the parent metagame, which will
+tell it that your game is ready to play. Use this only if you called
+`Tinygame.loading()` before page load, or else the parent metagame will
+assume the game is ready to play upon page load.
 
   [WarioWare]: http://en.wikipedia.org/wiki/Wario_%28franchise%29#WarioWare_series
   [sandbox]: http://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/
