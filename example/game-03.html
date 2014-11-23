@@ -15,8 +15,9 @@ html {
   margin-top: 30px;
 }
 
-.controls {
-  margin: 1em;
+.controls button {
+  font-size: 2em;
+  margin: 0.5em;
 }
 
 .key {
@@ -25,7 +26,6 @@ html {
   padding: 8px;
   margin: 2px;
   border-radius: 5px;
-  box-shadow: -2px 2px 2px #888;
 }
 </style>
 <title>Game 3</title>
@@ -34,19 +34,58 @@ html {
 <canvas id="canvas"></canvas>
 <br>
 <div class="controls">
-  <span class="key">←</span> <span class="key">→</span>
-  or
-  <span class="key">A</span> <span class="key">D</span>
+    <button class="key left-btn">←</button> <button class="key right-btn">→</button>
 </div>
 <script type="text/javascript" src="jquery-2.0.3.js"></script>
 <script src="./coquette.js"></script>
 <script src="../contrib/tinygame.js"></script>
 <script>
+
+  function pos2center (pos, size) {
+    return {
+      x: pos.x + (size.x/2),
+      y: pos.y + (size.y/2)
+    };
+  }
+
+  function center2pos (center, size) {
+    return {
+      x: center.x - (size.x/2),
+      y: center.y - (size.y/2)
+    };
+  }
+
+  var Controls = function (coq) {
+    var self = this;
+
+    var leftBtn = false;
+    var rightBtn = false;
+
+    self.goLeft = function goLeft () {
+      return coq.inputter.isDown(coq.inputter.LEFT_ARROW) 
+          || coq.inputter.isDown(coq.inputter.A)
+          || leftBtn;
+    };
+
+    self.goRight = function goRight () {
+      return coq.inputter.isDown(coq.inputter.RIGHT_ARROW) 
+          || coq.inputter.isDown(coq.inputter.D)
+          || rightBtn;
+    };
+
+    $('.left-btn').on('mousedown', function () { leftBtn = true; });
+    $('.left-btn').on('mouseup', function () { leftBtn = false; });
+    $('.right-btn').on('mousedown', function () { rightBtn = true; });
+    $('.right-btn').on('mouseup', function () { rightBtn = false; });
+  };
+
   var Game = function (opts) {
     var WIDTH = 500;
     var HEIGHT = 150;
     var coq = this.coq = new Coquette(this, "canvas", WIDTH, HEIGHT, "#000");
     this.gameover = false;
+
+    this.controls = new Controls(coq);
 
     this.win = function win () {
       this.gameover = true;
@@ -62,9 +101,9 @@ html {
 
     var speed = (WIDTH*2)/(opts.playTime*60);
 
-    coq.entities.create(Player, { 
-      pos: { x: 10, y: 131 }, 
-      speed: speed, 
+    coq.entities.create(Player, {
+      pos: { x: 10, y: 131 },
+      speed: speed,
       color: "#f07",
       zindex: -1
     });
@@ -85,18 +124,18 @@ html {
     for (var i = 0; i < crushers; i++) {
       var x = (WIDTH/crushers) * (i+1) - (WIDTH/crushers)/2 ;
       var y = randStart();
-      coq.entities.create(Crusher, { 
+      coq.entities.create(Crusher, {
         pos: { x: x, y: y },
         speeds: {
           rising: speed * 0.7,
-          falling: speed * 3.5 
+          falling: speed * 3.5
         }
       });
     }
   };
 
   var Player = function (game, settings) {
-    this.game = game; 
+    this.game = game;
     var coq = this.game.coq;
 
     // set some defaults
@@ -108,32 +147,34 @@ html {
       this[i] = settings[i];
     }
 
+    if (!this.center)
+      this.center = pos2center(this.pos, this.size);
+
     // define our draw, update, and collision methods
     this.draw = function (ctx) {
       ctx.fillStyle = settings.color;
+      var pos = center2pos(this.center, this.size);
       if (!this.squished) {
-        ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+        ctx.fillRect(pos.x, pos.y, this.size.x, this.size.y);
       }
       else {
         var factor = 2;
         ctx.fillRect(
-          this.pos.x - (this.size.x*factor)/2, 
-          this.pos.y + (this.size.y*(factor-1)/factor), 
-          this.size.x * factor, 
+          pos.x - (this.size.x*factor)/2,
+          pos.y + (this.size.y*(factor-1)/factor),
+          this.size.x * factor,
           this.size.y / factor
         );
       }
     };
     this.update = function () {
       if (!this.game.gameover) {
-        if (this.pos.x >= 490) {
+        if (this.center.x >= 495) {
           this.game.win();
         }
         else {
-          var right = coq.inputter.down(coq.inputter.RIGHT_ARROW) || coq.inputter.down(coq.inputter.D);
-          var left = coq.inputter.down(coq.inputter.LEFT_ARROW) || coq.inputter.down(coq.inputter.A);
-          if (right) this.pos.x += this.speed; 
-          if (left) this.pos.x -= this.speed; 
+          if (this.game.controls.goRight()) this.center.x += this.speed;
+          if (this.game.controls.goLeft()) this.center.x -= this.speed;
         }
       }
     };
@@ -152,8 +193,8 @@ html {
     this.color = "#aaa";
     this.size = { x: 20, y: 40 };
     this.sweep = {
-      top: 0,
-      bottom: 99 
+      top: 20,
+      bottom: 119
     };
     this.speeds = {
       falling: 8,
@@ -165,10 +206,14 @@ html {
       this[i] = settings[i];
     }
 
+    if (!this.center)
+      this.center = pos2center(this.pos, this.size);
+
     // define our draw and update methods
     this.draw = function (ctx) {
       ctx.fillStyle = this.color;
-      ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+      var pos = center2pos(this.center, this.size);
+      ctx.fillRect(pos.x, pos.y, this.size.x, this.size.y);
     };
     this.update = function () {
       this[this.state]();
@@ -177,21 +222,21 @@ html {
     // some internals
     this.state = 'falling';
     this.falling = function () {
-      if (this.pos.y >= this.sweep.bottom) {
+      if (this.center.y >= this.sweep.bottom) {
         this.state = "rising";
       }
       else {
-        this.pos.y += this.speeds.falling;
-        this.pos.y = Math.min(this.pos.y, this.sweep.bottom);
+        this.center.y += this.speeds.falling;
+        this.center.y = Math.min(this.center.y, this.sweep.bottom);
       }
     };
     this.rising = function () {
-      if (this.pos.y <= this.sweep.top) {
+      if (this.center.y <= this.sweep.top) {
         this.state = "falling";
       }
       else {
-        this.pos.y -= this.speeds.rising;
-        this.pos.y = Math.max(this.pos.y, this.sweep.top);
+        this.center.y -= this.speeds.rising;
+        this.center.y = Math.max(this.center.y, this.sweep.top);
       }
     };
   };
