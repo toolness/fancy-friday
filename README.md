@@ -9,7 +9,7 @@ Only recent versions of modern browsers are currently supported; the
 library is currently being tested on Firefox 25, Chrome 30,
 Safari 6 (Desktop and iOS), Internet Explorer 10, and Opera 17.
 
-## Metagame API
+## Fancy Friday/Metagame API (v0.2)
 
 The metagame should include the `fancy-friday.css` stylesheet and the
 `fancy-friday.js` script. There are no other dependencies.
@@ -125,7 +125,7 @@ bar. Its height can also be changed.
 `ff-time-remaining` is the class given to the filled area of the time
 bar. Its background can be changed.
 
-## Embedded Microgame API
+## Embedded Microgame API (v2)
 
 Embedded microgames communicate with their parent metagame entirely through
 DOM primitives; there is no hard requirement for client-side stylesheets or
@@ -184,7 +184,7 @@ top few pixels of its content will be obscured by the time bar that
 the metagame overlays atop it. The default height of this time bar is
 8 pixels.
 
-## Tinygame API
+## Tinygame API (v0.2)
 
 `contrib/tinygame.js` is a standalone library with no dependencies that
 wraps the Embedded Microgame API in an easy-to-use interface, while
@@ -271,6 +271,63 @@ This will send a `ready` event to the parent metagame, which will
 tell it that your game is ready to play. Use this only if you called
 `Tinygame.loading()` before page load, or else the parent metagame will
 assume the game is ready to play upon page load.
+
+## Revision History
+
+### Fancy Friday
+
+#### Fancy Friday v0.2
+
+Released November 2014
+
+* Wait for the `ready` message, specified in the Embedded Microgame API v2,
+  rather than the microgame window's `load` event, to set the
+  microgame state to `MICROGAME_READY`.
+
+* Introduce the `maxLoadTime` option to the `Microgame` constructor.
+
+#### Fancy Friday v0.1
+
+Released November 2013
+
+This is the first release of Fancy Friday.
+
+### Embedded Microgame API
+
+#### Embedded Microgame API v2
+
+Released November 2014
+
+* Introduce the mandatory `ready` message, which is required for
+  microgames to indicate to their parent metagame that their assets
+  are loaded and they are ready to play.
+
+#### Embedded Microgame API v1
+
+Released November 2013
+
+This is the first release of the Embedded Microgame API.
+
+### Tinygame
+
+#### Tinygame v0.2
+
+Released November 2014
+
+* Send the `ready` message, specified in the Embedded Microgame API v2,
+  to the parent metagame on page load by default.
+
+* Introduce `Tinygame.loading()` to prevent the default behavior described
+  above.
+
+* Introduce `Tinygame.loaded()` to manually send the `ready` message
+  to the parent metagame.
+
+#### Tinygame v0.1
+
+Released November 2013
+
+This is the first release of Tinygame.
 
   [WarioWare]: http://en.wikipedia.org/wiki/Wario_%28franchise%29#WarioWare_series
   [sandbox]: http://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/

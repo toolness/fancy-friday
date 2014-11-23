@@ -1,3 +1,8 @@
+/*!
+ * Tinygame v0.2
+ * https://github.com/toolness/fancy-friday
+ */
+
 var Tinygame = (function() {
   var DEFAULTS = {playTime: 5, endingTime: 2, difficulty: "easy"};
 

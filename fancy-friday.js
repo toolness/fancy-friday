@@ -1,3 +1,8 @@
+/*!
+ * Fancy Friday v0.2
+ * https://github.com/toolness/fancy-friday
+ */
+
 var FancyFriday = (function() {
   var FOCUS_CHECK_INTERVAL = 10;
   var DEFAULT_PLAY_TIME = 5;
