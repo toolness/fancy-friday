@@ -32,7 +32,6 @@ var FancyFriday = (function() {
     var maxLoadTime = options.maxLoadTime || DEFAULT_MAX_LOAD_TIME;
     var loadedTimeout;
     var outOfTimeTimeout;
-    var inCustomLoad = false;
 
     if (typeof(options.sandbox) == 'undefined')
       options.sandbox = SANDBOX_PERMISSIONS;
@@ -79,15 +78,8 @@ var FancyFriday = (function() {
       if (!data) return;
       if (data.score >= 0 && data.score <= 1) microgame.score = data.score;
 
-      if (data.type == "customloadstart" &&
+      if (data.type == "ready" &&
           microgame.microgameState == microgame.MICROGAME_LOADING) {
-        inCustomLoad = true;
-        return;
-      }
-      if (data.type == "customloadend" &&
-          microgame.microgameState == microgame.MICROGAME_LOADING &&
-          inCustomLoad) {
-        inCustomLoad = false;
         microgame.ready();
       }
 
@@ -123,20 +115,6 @@ var FancyFriday = (function() {
     };
 
     loadedTimeout = setTimeout(microgame.ready, maxLoadTime * 1000);
-
-    iframe.addEventListener("load", function() {
-      // In Chrome (and possibly other browsers), load events are
-      // received before message events, even if messages were
-      // posted by a window before its load event fired. So we'll
-      // wait a bit to see if we get a customloadstart message.
-      setTimeout(function() {
-        if (inCustomLoad ||
-            microgame.microgameState != microgame.MICROGAME_LOADING)
-          return;
-
-        microgame.ready();
-      }, 100);
-    });
 
     microgame.addEventListener("microgameready", function(e) {
       if (microgame.autoplay) microgame.play();

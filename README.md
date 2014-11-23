@@ -170,15 +170,9 @@ in the metagame.
 The message can also have a `type` property corresponding to one of the
 following strings:
 
-* `customloadstart` - The metagame will wait for the microgame to send
-  a `customloadend` message before setting its corresponding microgame 
-  instance's `microgameState` property to `MICROGAME_READY`. This message
-  *must* be posted before the microgame iframe's `load` event has fired,
-  or else the default behavior of setting `microgameState` to
-  `MICROGAME_READY` when the load event fires will occur.
-
-* `customloadend` - The metagame will set its corresponding microgame
-  instance's `microgameState` property to `MICROGAME_READY`.
+* `ready` - The metagame will set its corresponding microgame
+  instance's `microgameState` property to `MICROGAME_READY`. This
+  *must* be sent by the microgame.
 
 * `end` - The metagame will set its corresponding microgame instance's
   `microgameState` property to `MICROGAME_ENDING`.
@@ -258,10 +252,13 @@ Shorthand for `Tinygame.end(0)`.
 
 #### Tinygame.loading()
 
-This will send a `customloadstart` event to the parent metagame, which
-gives the microgame time to asynchronously load assets even after its
-page's `load` event has fired. You need to call this before your page's
-`load` event has fired for it to actually do anything, though!
+Ordinarily, Tinygame will send a `ready` event to the parent metagame
+when the page's `load` event fires. This function can be called before
+that time to prevent this default behavior, which is useful if e.g. the
+microgame needs extra time to load additional assets via JavaScript.
+
+Once the microgame is ready, it is responsible for calling
+`Tinygame.loaded()` to indicate that it is ready to play.
 
 Note also that the game can't take forever to load. After a maximum
 loading period has elapsed, the parent metagame may forcibly regard the
@@ -270,7 +267,7 @@ game, which will hopefully result in hilarity.
 
 #### Tinygame.loaded()
 
-This will send a `customloadend` event to the parent metagame, which will
+This will send a `ready` event to the parent metagame, which will
 tell it that your game is ready to play. Use this only if you called
 `Tinygame.loading()` before page load, or else the parent metagame will
 assume the game is ready to play upon page load.

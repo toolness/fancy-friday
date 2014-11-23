@@ -6,6 +6,7 @@ var Tinygame = (function() {
   var inDevelopmentMode = !('playTime' in queryArgs) || queryArgs.dev == '1';
   var metagame = inDevelopmentMode ? window : window.parent;
   var script = document.scripts[document.scripts.length-1];
+  var preventReadyOnLoad = false;
 
   function getArg(name) {
     var attrName = 'data-' + name.toLowerCase();
@@ -38,7 +39,6 @@ var Tinygame = (function() {
     var timeRemaining = document.createElement('div');
     var outOfTimeTimeout;
     var hasStartedPlaying = false;
-    var inCustomLoad = false;
 
     function cleanup() {
       clearTimeout(outOfTimeTimeout);
@@ -92,25 +92,12 @@ var Tinygame = (function() {
         }
       }, true);
 
-    window.addEventListener("load", function() {
-      // In Chrome (and possibly other browsers), load events are
-      // received before message events, even if messages were
-      // posted by a window before its load event fired. So we'll
-      // wait a bit to see if we get a customloadstart message.
-      setTimeout(function() {
-        if (!inCustomLoad) startPlaying();
-      }, 100);
-    }, false);
-
     window.addEventListener("message", function(event) {
       var data = event.data;
 
       if (!data) return;
-      if (data.type == 'customloadstart') {
-        inCustomLoad = true;
-      } else if (data.type == 'customloadend' && inCustomLoad) {
-        inCustomLoad = false;
-        startPlaying();
+      if (data.type == 'ready') {
+        startPlaying();        
       } else if (data.type == 'end') {
         cleanup();
       }
@@ -121,10 +108,10 @@ var Tinygame = (function() {
   Tinygame.endingTime = getTimeArg('endingTime');
   Tinygame.difficulty = getArg('difficulty');
   Tinygame.loading = function() {
-    metagame.postMessage({type: 'customloadstart'}, '*');
+    preventReadyOnLoad = true;
   };
   Tinygame.loaded = function() {
-    metagame.postMessage({type: 'customloadend'}, '*');
+    metagame.postMessage({type: 'ready'}, '*');
   };
   Tinygame.end = function(score) {
     var data = {type: 'end'};
@@ -133,6 +120,11 @@ var Tinygame = (function() {
   };
   Tinygame.win = Tinygame.end.bind(Tinygame, 1.0);
   Tinygame.lose = Tinygame.end.bind(Tinygame, 0);
+
+  window.addEventListener("load", function() {
+    if (!preventReadyOnLoad)
+      metagame.postMessage({type: 'ready'}, '*');
+  }, false);
 
   window.addEventListener("message", function(event) {
     if (!event.data || typeof(event.data) != "object") return;
